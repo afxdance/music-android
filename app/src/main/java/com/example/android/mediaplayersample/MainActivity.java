@@ -16,6 +16,8 @@
 
 package com.example.android.mediaplayersample;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,12 +36,15 @@ public final class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     public static final int MEDIA_RES_ID = R.raw.jazz_in_paris;
+    public static final int UPLOAD_REQUEST_CODE = 1;
 
     private TextView mTextDebug;
     private SeekBar mSeekbarAudio;
     private ScrollView mScrollContainer;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
+
+    private int loopMode = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +59,7 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mPlayerAdapter.loadMedia(MEDIA_RES_ID);
+        //mPlayerAdapter.loadMedia(MEDIA_RES_ID);
         Log.d(TAG, "onStart: create MediaPlayer");
     }
 
@@ -71,9 +76,14 @@ public final class MainActivity extends AppCompatActivity {
 
     private void initializeUI() {
         mTextDebug = (TextView) findViewById(R.id.text_debug);
-        Button mPlayButton = (Button) findViewById(R.id.button_play);
+        final Button mPlayButton = (Button) findViewById(R.id.button_play);
         Button mPauseButton = (Button) findViewById(R.id.button_pause);
-        Button mResetButton = (Button) findViewById(R.id.button_reset);
+        Button mUploadButton = (Button) findViewById(R.id.button_upload);
+        Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
+        Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
+        Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
+        Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
         mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
 
@@ -91,13 +101,66 @@ public final class MainActivity extends AppCompatActivity {
                         mPlayerAdapter.play();
                     }
                 });
-        mResetButton.setOnClickListener(
+        mUploadButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.reset();
+                        onUpload();
                     }
                 });
+        mSetLoopButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPlayerAdapter.setLoop(loopMode);
+                    }
+                });
+        mIncreaseSpeedButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPlayerAdapter.increaseSpeed();
+                    }
+                });
+        mDecreaseSpeedButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPlayerAdapter.decreaseSpeed();
+                    }
+                });
+        mSkipForwardButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPlayerAdapter.skipForward();
+                    }
+                });
+        mSkipBackwardButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPlayerAdapter.skipBackward();
+                    }
+                });
+    }
+
+    private void onUpload() {
+        Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
+        myIntent.setType("audio/*");
+        startActivityForResult(myIntent, UPLOAD_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent)
+    {
+        if(requestCode == UPLOAD_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                    Uri uploadedMusic = intent.getData();
+                    mPlayerAdapter.loadMedia(uploadedMusic);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     private void initializePlaybackController() {

@@ -19,6 +19,7 @@ package com.example.android.mediaplayersample;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.net.Uri;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,17 +54,18 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private void initializeMediaPlayer() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopUpdatingCallbackWithPosition(true);
-                    logToUI("MediaPlayer playback completed");
-                    if (mPlaybackInfoListener != null) {
-                        mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.COMPLETED);
-                        mPlaybackInfoListener.onPlaybackCompleted();
-                    }
-                }
-            });
+            mMediaPlayer.setLooping(true);
+//            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                @Override
+//                public void onCompletion(MediaPlayer mediaPlayer) {
+//                    stopUpdatingCallbackWithPosition(true);
+//                    logToUI("MediaPlayer playback completed");
+//                    if (mPlaybackInfoListener != null) {
+//                        mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.COMPLETED);
+//                        mPlaybackInfoListener.onPlaybackCompleted();
+//                    }
+//                }
+//            });
             logToUI("mMediaPlayer = new MediaPlayer()");
         }
     }
@@ -73,17 +75,13 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     // Implements PlaybackControl.
-    @Override
-    public void loadMedia(int resourceId) {
-        mResourceId = resourceId;
+    public void loadMedia(Uri uri) {
 
         initializeMediaPlayer();
 
-        AssetFileDescriptor assetFileDescriptor =
-                mContext.getResources().openRawResourceFd(mResourceId);
         try {
             logToUI("load() {1. setDataSource}");
-            mMediaPlayer.setDataSource(assetFileDescriptor);
+            mMediaPlayer.setDataSource(mContext, uri);
         } catch (Exception e) {
             logToUI(e.toString());
         }
@@ -119,26 +117,11 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public void play() {
         if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
-            logToUI(String.format("playbackStart() %s",
-                                  mContext.getResources().getResourceEntryName(mResourceId)));
-            mMediaPlayer.start();
+           mMediaPlayer.start();
             if (mPlaybackInfoListener != null) {
                 mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PLAYING);
             }
             startUpdatingCallbackWithPosition();
-        }
-    }
-
-    @Override
-    public void reset() {
-        if (mMediaPlayer != null) {
-            logToUI("playbackReset()");
-            mMediaPlayer.reset();
-            loadMedia(mResourceId);
-            if (mPlaybackInfoListener != null) {
-                mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.RESET);
-            }
-            stopUpdatingCallbackWithPosition(true);
         }
     }
 
@@ -151,6 +134,48 @@ public final class MediaPlayerHolder implements PlayerAdapter {
             }
             logToUI("playbackPause()");
         }
+    }
+
+    @Override
+    public void setLoop(int loopMode) {
+        //TODO: A/B Loop creation logic.
+        /**
+         * When loop button is clicked, calls this based on current stage of loop creation.
+         *
+         * Stages:
+         *  - -1: No music uploaded. No changes made to loop.
+         *  - 0: Set start of loop
+         *  - 1: Set end of loop. If start point is after end point, still creates loop properly.
+         *  - 2: Clear loop start and end.
+         *
+         * Reference website implementation at function setLoop() in audio.js:
+         * https://github.com/afxdance/music/blob/master/audio.js
+         */
+
+        //Hint: You will need to implement additional logic outside of this function.
+        //Hint: Try looking at this.startUpdatingCallbackWithPosition(), which runs a task every millisecond.
+    }
+
+    @Override
+    public void skipForward() {
+        //TODO: Skips position forwards 5 seconds.
+        //Hint: use this.seekTo(position) and MediaPlayer.getCurrentPosition()...
+    }
+
+    @Override
+    public void skipBackward() {
+        //TODO: Skips position backwards 5 seconds.
+    }
+
+    @Override
+    public void increaseSpeed() {
+        //TODO: Increases playback speed by 5%
+        //Hint: use MediaPlayer.setPlaybackParams()...
+    }
+
+    @Override
+    public void decreaseSpeed() {
+        //TODO: Decreases playback speed by 5%
     }
 
     @Override

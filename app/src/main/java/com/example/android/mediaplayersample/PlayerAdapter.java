@@ -16,12 +16,14 @@
 
 package com.example.android.mediaplayersample;
 
+import android.net.Uri;
+
 /**
  * Allows {@link MainActivity} to control media playback of {@link MediaPlayerHolder}.
  */
 public interface PlayerAdapter {
 
-    void loadMedia(int resourceId);
+    void loadMedia(Uri uri);
 
     void release();
 
@@ -29,7 +31,15 @@ public interface PlayerAdapter {
 
     void play();
 
-    void reset();
+    void setLoop(int loopMode);
+
+    void increaseSpeed();
+
+    void decreaseSpeed();
+
+    void skipForward();
+
+    void skipBackward();
 
     void pause();
 

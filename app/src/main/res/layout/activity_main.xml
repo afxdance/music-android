@@ -23,7 +23,7 @@
     <ScrollView
             android:id="@+id/scroll_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_margin="8dp"
             android:layout_weight="1">
 
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
         <Button
                 android:id="@+id/button_play"
@@ -66,11 +66,46 @@
                 android:text="Pause"/>
 
         <Button
-                android:id="@+id/button_reset"
+                android:id="@+id/button_upload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Reset"/>
+                android:text="Upload"/>
+
+        <Button
+            android:id="@+id/button_set_loop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Set loop start"/>
+
+        <Button
+            android:id="@+id/button_increase_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Speed +5%"/>
+
+        <Button
+            android:id="@+id/button_decrease_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Speed -5%"/>
+
+        <Button
+            android:id="@+id/button_skip_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+5s"/>
+
+        <Button
+            android:id="@+id/button_skip_backward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="-5s"/>
 
     </LinearLayout>
 
