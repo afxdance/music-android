@@ -1,9 +1,6 @@
-Simple MediaPlayer Sample
+slow.afx.dance
 =========================
 
-This sample has been deprecated/archived meaning it's read-only and it's no longer actively maintained (more details on archiving can be found [here][1]).
+A music-playing app for dancers
 
-For other related samples, check out the new [github.com/android/media-samples][2] repo. Thank you!
-
-[1]: https://help.github.com/en/articles/about-archiving-repositories
-[2]: https://github.com/android/media-samples
+Built on Simple MediaPlayer Sample by https://medium.com/androiddevelopers/building-a-simple-audio-app-in-android-part-1-3-c14d1a66e0f1
