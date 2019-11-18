@@ -120,11 +120,9 @@ public final class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        int new_speed = 100 * Math.round((mPlayerAdapter.increaseSpeed()));
-//                        setContentView(R.layout.activity_main);
-//                        TextView text = (TextView) findViewById(R.id.speed);
-//                        text.setText("Current Speed: "); //+ ((Integer) new_speed).toString() + "%");
-                        mPlayerAdapter.increaseSpeed();
+                        int new_speed = Math.round(100 * mPlayerAdapter.increaseSpeed());
+                        TextView text = (TextView) findViewById(R.id.speed);
+                        text.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
 
                     }
                 });
@@ -132,7 +130,9 @@ public final class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.decreaseSpeed();
+                        int new_speed = Math.round(100 * mPlayerAdapter.decreaseSpeed());
+                        TextView text = (TextView) findViewById(R.id.speed);
+                        text.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
                     }
                 });
         mSkipForwardButton.setOnClickListener(
