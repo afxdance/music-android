@@ -44,7 +44,7 @@ public final class MainActivity extends AppCompatActivity {
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
 
-    private int loopMode = -1;
+    private int loopMode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +108,14 @@ public final class MainActivity extends AppCompatActivity {
                         onUpload();
                     }
                 });
+        Log.d(TAG, "Looping button");
         mSetLoopButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d(TAG, "Looping with code " + loopMode);
                         mPlayerAdapter.setLoop(loopMode);
+                        loopMode++;     // switch to next mode
                     }
                 });
         mIncreaseSpeedButton.setOnClickListener(
