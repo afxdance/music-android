@@ -17,6 +17,7 @@
 package com.example.android.mediaplayersample;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -119,7 +120,12 @@ public final class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+//                        int new_speed = 100 * Math.round((mPlayerAdapter.increaseSpeed()));
+//                        setContentView(R.layout.activity_main);
+//                        TextView text = (TextView) findViewById(R.id.speed);
+//                        text.setText("Current Speed: "); //+ ((Integer) new_speed).toString() + "%");
                         mPlayerAdapter.increaseSpeed();
+
                     }
                 });
         mDecreaseSpeedButton.setOnClickListener(
