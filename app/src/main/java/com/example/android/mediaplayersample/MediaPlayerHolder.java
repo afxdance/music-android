@@ -171,30 +171,41 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     public void skipForward() {
         //TODO: Skips position forwards 5 seconds.
         //Hint: use this.seekTo(position) and MediaPlayer.getCurrentPosition()...
-        mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() + 5000);
+        if(mMediaPlayer.isPlaying()) {
+            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() + 5000);
+        }
     }
 
     @Override
     public void skipBackward() {
         //TODO: Skips position backwards 5 seconds.
-        mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - 5000);
+        if(mMediaPlayer.isPlaying()) {
+            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - 5000);
+        }
     }
 
     @Override
     public float increaseSpeed() {
         //TODO: Increases playback speed by 5%
         //Hint: use MediaPlayer.setPlaybackParams()...
-        float speed = mMediaPlayer.getPlaybackParams().getSpeed() + 0.05f;
-        mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
-        return speed;
+
+        if(mMediaPlayer.isPlaying()){
+            float speed = mMediaPlayer.getPlaybackParams().getSpeed() + 0.05f;
+            mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+            return speed;
+        }
+        return -1f;
     }
 
     @Override
     public float decreaseSpeed() {
         //TODO: Decreases playback speed by 5%
-        float speed = mMediaPlayer.getPlaybackParams().getSpeed() - 0.05f;
-        mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
-        return speed;
+        if(mMediaPlayer.isPlaying()){
+            float speed = mMediaPlayer.getPlaybackParams().getSpeed() - 0.05f;
+            mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+            return speed;
+        }
+        return -1f;
     }
 
     @Override
