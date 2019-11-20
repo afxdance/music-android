@@ -20,10 +20,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -40,10 +42,15 @@ public final class MainActivity extends AppCompatActivity {
     public static final int UPLOAD_REQUEST_CODE = 1;
 
     private TextView mTextDebug;
+
     private SeekBar mSeekbarAudio;
     private ScrollView mScrollContainer;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
+
+    //private boolean playing = false;
+
+    private TextView curr_speed;
 
     private int loopMode = -1;
 
@@ -51,6 +58,7 @@ public final class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        curr_speed = (TextView) findViewById(R.id.speed);
         initializeUI();
         initializeSeekbar();
         initializePlaybackController();
@@ -77,8 +85,9 @@ public final class MainActivity extends AppCompatActivity {
 
     private void initializeUI() {
         mTextDebug = (TextView) findViewById(R.id.text_debug);
-        final Button mPlayButton = (Button) findViewById(R.id.button_play);
-        Button mPauseButton = (Button) findViewById(R.id.button_pause);
+//        final Button mPlayButton = (Button) findViewById(R.id.button_play);
+        final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
+//        Button mPauseButton = (Button) findViewById(R.id.button_pause);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
         Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
         Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
@@ -88,18 +97,17 @@ public final class MainActivity extends AppCompatActivity {
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
         mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
 
-        mPauseButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mPlayerAdapter.pause();
-                    }
-                });
         mPlayButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.play();
+                        int state = mPlayerAdapter.play();
+                        if(state == 1){
+                            mPlayButton.setBackgroundResource(R.drawable.play);
+                        }else if(state == 2){
+                            mPlayButton.setBackgroundResource(R.drawable.pause);
+                        }
+
                     }
                 });
         mUploadButton.setOnClickListener(
@@ -121,8 +129,7 @@ public final class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         int new_speed = Math.round(100 * mPlayerAdapter.increaseSpeed());
-                        TextView text = (TextView) findViewById(R.id.speed);
-                        text.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
+                        curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
 
                     }
                 });
@@ -131,8 +138,7 @@ public final class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         int new_speed = Math.round(100 * mPlayerAdapter.decreaseSpeed());
-                        TextView text = (TextView) findViewById(R.id.speed);
-                        text.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
+                        curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
                     }
                 });
         mSkipForwardButton.setOnClickListener(

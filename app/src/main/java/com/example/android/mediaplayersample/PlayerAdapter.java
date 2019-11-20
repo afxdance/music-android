@@ -29,7 +29,7 @@ public interface PlayerAdapter {
 
     boolean isPlaying();
 
-    void play();
+    int play();
 
     void setLoop(int loopMode);
 
@@ -41,7 +41,7 @@ public interface PlayerAdapter {
 
     void skipBackward();
 
-    void pause();
+//    void pause();
 
     void initializeProgressCallback();
 

@@ -56,19 +56,20 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Current Speed: 100%" />
-        <Button
-                android:id="@+id/button_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="Play"/>
 
-        <Button
-                android:id="@+id/button_pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Pause"/>
+        <ImageButton
+            android:id="@+id/button_play"
+            android:layout_width="76dp"
+            android:layout_height="70dp"
+            android:layout_weight="4"
+            android:background="@drawable/play"/>
+
+<!--        <Button-->
+<!--                android:id="@+id/button_pause"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="Pause"/>-->
 
         <Button
                 android:id="@+id/button_upload"

@@ -37,7 +37,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     private final Context mContext;
     private MediaPlayer mMediaPlayer;
-    private int mResourceId;
     private PlaybackInfoListener mPlaybackInfoListener;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
@@ -116,26 +115,37 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
-    public void play() {
-        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
-           mMediaPlayer.start();
-            if (mPlaybackInfoListener != null) {
-                mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PLAYING);
-            }
+    public int play() {
+        if (mMediaPlayer != null){
+            logToUI("playbackPlay/Pause()");
             startUpdatingCallbackWithPosition();
+            if(mMediaPlayer.isPlaying()) {
+                mMediaPlayer.pause();
+                if (mPlaybackInfoListener != null) {
+                    mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PAUSED);
+                }
+                return 1;
+            }else{
+                mMediaPlayer.start();
+                if (mPlaybackInfoListener != null) {
+                    mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PLAYING);
+                }
+                return 2;
+            }
         }
+        return 3;
     }
 
-    @Override
-    public void pause() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.pause();
-            if (mPlaybackInfoListener != null) {
-                mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PAUSED);
-            }
-            logToUI("playbackPause()");
-        }
-    }
+//    @Override
+//    public void pause() {
+//        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+//            mMediaPlayer.pause();
+//            if (mPlaybackInfoListener != null) {
+//                mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PAUSED);
+//            }
+//            logToUI("playbackPause()");
+//        }
+//    }
 
     @Override
     public void setLoop(int loopMode) {
