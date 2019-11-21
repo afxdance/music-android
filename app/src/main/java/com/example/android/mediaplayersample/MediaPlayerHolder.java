@@ -22,6 +22,10 @@ import android.media.AudioDeviceCallback;
 import android.media.AudioDeviceInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
+
+import com.chibde.visualizer.BarVisualizer;
+import com.chibde.visualizer.LineBarVisualizer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,6 +44,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private PlaybackInfoListener mPlaybackInfoListener;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
+    //private BarVisualizer mBarVisualizer;
 
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
@@ -67,6 +72,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 //                    }
 //                }
 //            });
+
             logToUI("mMediaPlayer = new MediaPlayer()");
         }
     }
@@ -136,6 +142,20 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         return 3;
     }
 
+    @Override
+    public int getID(){
+        return mMediaPlayer.getAudioSessionId();
+    }
+    @Override
+    public void visualize(LineBarVisualizer obj){
+
+        obj.setColor(ContextCompat.getColor(mContext, R.color.lightblue));
+        // define custom number of bars you want in the visualizer between (10 - 256).
+        obj.setDensity(35);
+        // Set your media player to the visualizer.
+        obj.setPlayer(mMediaPlayer.getAudioSessionId());
+
+    }
 //    @Override
 //    public void pause() {
 //        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {

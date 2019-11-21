@@ -18,6 +18,9 @@ package com.example.android.mediaplayersample;
 
 import android.net.Uri;
 
+import com.chibde.visualizer.BarVisualizer;
+import com.chibde.visualizer.LineBarVisualizer;
+
 /**
  * Allows {@link MainActivity} to control media playback of {@link MediaPlayerHolder}.
  */
@@ -42,6 +45,10 @@ public interface PlayerAdapter {
     void skipBackward();
 
 //    void pause();
+
+    int getID();
+
+    void visualize(LineBarVisualizer obj);
 
     void initializeProgressCallback();
 

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--<manifest xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    package="com.chibde.audiovisualizer.sample">-->
 <!--
   ~ Copyright 2017 Google Inc. All rights reserved.
   ~
@@ -16,10 +19,15 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <com.chibde.visualizer.LineBarVisualizer
+        android:id="@+id/barvisualizer"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"/>
     <ScrollView
             android:id="@+id/scroll_container"
             android:layout_width="match_parent"
@@ -50,6 +58,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
+
         <TextView
             android:id="@+id/speed"
             android:layout_width="wrap_content"
@@ -83,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Set loop start"/>
+            android:text="Visualize"/>
 
         <Button
             android:id="@+id/button_increase_speed"
