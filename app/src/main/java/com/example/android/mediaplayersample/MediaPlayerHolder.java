@@ -45,6 +45,8 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
 
+    private float speed = 1.00f;
+
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
     }
@@ -132,6 +134,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                 return 1;
             }else{
                 mMediaPlayer.start();
+                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
                 if (mPlaybackInfoListener != null) {
                     mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PLAYING);
                 }
@@ -144,10 +147,9 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public void visualize(LineBarVisualizer visualizer){
 
-        visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue));
-        // define custom number of bars you want in the visualizer between (10 - 256).
-        visualizer.setDensity(35);
-        // Set your media player to the visualizer.
+        //visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue)); // define custom number of bars you want in the visualizer between (10 - 256).
+        visualizer.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
+        visualizer.setDensity(35); // Set your media player to the visualizer.
         visualizer.setPlayer(mMediaPlayer.getAudioSessionId());
 
     }
@@ -200,28 +202,35 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
-    public float increaseSpeed() {
+    public float adjustSpeed(int crease) {
         //TODO: Increases playback speed by 5%
         //Hint: use MediaPlayer.setPlaybackParams()...
-
-        if(mMediaPlayer.isPlaying()){
-            float speed = mMediaPlayer.getPlaybackParams().getSpeed() + 0.05f;
-            mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
-            return speed;
+        if(speed > 0 || crease == 1) {
+            speed += crease * 0.05f;
+            if(mMediaPlayer == null){
+                return speed;
+            }
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+            }
         }
-        return -1f;
+        return speed;
     }
 
-    @Override
-    public float decreaseSpeed() {
-        //TODO: Decreases playback speed by 5%
-        if(mMediaPlayer.isPlaying()){
-            float speed = mMediaPlayer.getPlaybackParams().getSpeed() - 0.05f;
-            mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
-            return speed;
-        }
-        return -1f;
-    }
+//    @Override
+//    public float decreaseSpeed() {
+//        //TODO: Decreases playback speed by 5%
+//        if(speed > 0) {
+//            speed -= 0.05f;
+//            if(mMediaPlayer == null){
+//                return speed;
+//            }
+//            if (mMediaPlayer.isPlaying()) {
+//                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+//            }
+//        }
+//        return speed;
+//    }
 
     @Override
     public void seekTo(int position) {

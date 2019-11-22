@@ -36,9 +36,9 @@ public interface PlayerAdapter {
 
     void setLoop(int loopMode);
 
-    float increaseSpeed();
+    float adjustSpeed(int crease);
 
-    float decreaseSpeed();
+//    float decreaseSpeed();
 
     void skipForward();
 

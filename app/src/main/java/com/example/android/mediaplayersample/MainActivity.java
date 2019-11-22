@@ -63,7 +63,8 @@ public final class MainActivity extends AppCompatActivity {
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private Context mContext = this;
     private LineBarVisualizer mBarVisualizer;
-
+    private boolean enableVisualize = false;
+    private boolean permissionChecked = false;
     private TextView curr_speed;
 
     private int loopMode = -1;
@@ -84,6 +85,19 @@ public final class MainActivity extends AppCompatActivity {
         });
         mBuilder.create();
         mBuilder.show();
+//        if (permissionChecked){
+//            enableVisualize = true;
+//            setContentView(R.layout.activity_main);
+//            curr_speed = (TextView) findViewById(R.id.speed);
+//            initializeUI();
+//            initializeSeekbar();
+//            initializePlaybackController();
+//            Log.d(TAG, "onCreate: finished");
+//            Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
+//            mToast.setGravity(Gravity.TOP,0,150);
+//            mToast.show();
+//
+//        }
     }
 
     private void askPermission() {
@@ -134,19 +148,22 @@ public final class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    setContentView(R.layout.activity_main);
-                    curr_speed = (TextView) findViewById(R.id.speed);
-                    initializeUI();
-                    initializeSeekbar();
-                    initializePlaybackController();
-                    Log.d(TAG, "onCreate: finished");
-                    Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
-                    mToast.setGravity(Gravity.TOP,0,150);
-                    mToast.show();
+                    enableVisualize = true;
+
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
+                permissionChecked = true;
+                setContentView(R.layout.activity_main);
+                curr_speed = (TextView) findViewById(R.id.speed);
+                initializeUI();
+                initializeSeekbar();
+                initializePlaybackController();
+                Log.d(TAG, "onCreate: finished");
+                Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
+                mToast.setGravity(Gravity.TOP,0,150);
+                mToast.show();
                 return;
             }
 
@@ -216,23 +233,27 @@ public final class MainActivity extends AppCompatActivity {
 //                        mPlayerAdapter.setLoop(loopMode);
 //                    }
 //                });
-        mVisualizeButton.setOnClickListener(
-                new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view){
-                        mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
-                        mPlayerAdapter.visualize(mBarVisualizer);
+        if(enableVisualize) {
+            mVisualizeButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(mPlayerAdapter.isPlaying()) {
+                                mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
+                                mPlayerAdapter.visualize(mBarVisualizer);
+                            }
+                        }
                     }
-                }
-        );
+            );
+        }else{
+            mVisualizeButton.setText("Visualize (Disabled)");
+        }
         mIncreaseSpeedButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int new_speed = Math.round(100 * mPlayerAdapter.increaseSpeed());
-                        if(new_speed >= 0){
+                        int new_speed = Math.round(100 * mPlayerAdapter.adjustSpeed(1));
                             curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
-                        }
 
                     }
                 });
@@ -240,10 +261,8 @@ public final class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int new_speed = Math.round(100 * mPlayerAdapter.decreaseSpeed());
-                        if(new_speed >= 0) {
-                            curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
-                        }
+                        int new_speed = Math.round(100 * mPlayerAdapter.adjustSpeed(-1));
+                        curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
                     }
                 });
         mSkipForwardButton.setOnClickListener(
