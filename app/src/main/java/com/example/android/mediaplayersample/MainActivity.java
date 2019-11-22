@@ -18,6 +18,7 @@ package com.example.android.mediaplayersample;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -25,14 +26,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
@@ -55,11 +59,10 @@ public final class MainActivity extends AppCompatActivity {
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
 
-    //private PackageManager mPackage = this.getPackageManager();
+    private AlertDialog.Builder mBuilder;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private Context mContext = this;
     private LineBarVisualizer mBarVisualizer;
-    //private boolean playing = false;
 
     private TextView curr_speed;
 
@@ -68,12 +71,22 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        curr_speed = (TextView) findViewById(R.id.speed);
-        initializeUI();
-        initializeSeekbar();
-        initializePlaybackController();
-        Log.d(TAG, "onCreate: finished");
+
+        mBuilder = new AlertDialog.Builder(this);
+        mBuilder.setTitle("Music Visualizer");
+        mBuilder.setMessage("Audio Recording is required for our visualizer to function properly. Please allow this permission. Thank you!");
+        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                askPermission();
+            }
+        });
+        mBuilder.create();
+        mBuilder.show();
+    }
+
+    private void askPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -86,6 +99,7 @@ public final class MainActivity extends AppCompatActivity {
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.RECORD_AUDIO)) {
+
                     // Show an explanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
@@ -95,18 +109,19 @@ public final class MainActivity extends AppCompatActivity {
                             new String[]{Manifest.permission.RECORD_AUDIO},
                             MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
 
-                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // MY_PERMISSIONS_REQUEST_RECORD_AUDIO is an
                     // app-defined int constant. The callback method gets the
                     // result of the request.
+
                 }
             } else {
                 // Permission has already been granted
             }
         }
 
-//        AppCompatActivity.requestPermissions(MainActivity.this,
-//                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                1);
+        //        AppCompatActivity.requestPermissions(MainActivity.this,
+        //                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+        //                1);
     }
 
     @Override
@@ -119,6 +134,15 @@ public final class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    setContentView(R.layout.activity_main);
+                    curr_speed = (TextView) findViewById(R.id.speed);
+                    initializeUI();
+                    initializeSeekbar();
+                    initializePlaybackController();
+                    Log.d(TAG, "onCreate: finished");
+                    Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
+                    mToast.setGravity(Gravity.TOP,0,150);
+                    mToast.show();
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -155,16 +179,15 @@ public final class MainActivity extends AppCompatActivity {
         final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
 //        Button mPauseButton = (Button) findViewById(R.id.button_pause);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
-        Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+//       Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
         Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
         Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
         Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
+        Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
         mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
         mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
-
-
 
         mPlayButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -186,22 +209,22 @@ public final class MainActivity extends AppCompatActivity {
                         onUpload();
                     }
                 });
-        mSetLoopButton.setOnClickListener(
-                new View.OnClickListener() {
+//        mSetLoopButton.setOnClickListener(
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        mPlayerAdapter.setLoop(loopMode);
+//                    }
+//                });
+        mVisualizeButton.setOnClickListener(
+                new View.OnClickListener(){
                     @Override
-                    public void onClick(View view) {
-                        // set custom color to the line.
-//                        mBarVisualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue));
-//                        // define custom number of bars you want in the visualizer between (10 - 256).
-//                        mBarVisualizer.setDensity(70);
-//                        // Set your media player to the visualizer.
-//
-//                        mBarVisualizer.setPlayer(mPlayerAdapter.getID());
+                    public void onClick(View view){
                         mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
-                        mPlayerAdapter.setLoop(loopMode);
                         mPlayerAdapter.visualize(mBarVisualizer);
                     }
-                });
+                }
+        );
         mIncreaseSpeedButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override

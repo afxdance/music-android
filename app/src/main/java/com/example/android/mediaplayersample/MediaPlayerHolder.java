@@ -44,7 +44,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private PlaybackInfoListener mPlaybackInfoListener;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
-    //private BarVisualizer mBarVisualizer;
 
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
@@ -143,17 +142,13 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
-    public int getID(){
-        return mMediaPlayer.getAudioSessionId();
-    }
-    @Override
-    public void visualize(LineBarVisualizer obj){
+    public void visualize(LineBarVisualizer visualizer){
 
-        obj.setColor(ContextCompat.getColor(mContext, R.color.lightblue));
+        visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue));
         // define custom number of bars you want in the visualizer between (10 - 256).
-        obj.setDensity(35);
+        visualizer.setDensity(35);
         // Set your media player to the visualizer.
-        obj.setPlayer(mMediaPlayer.getAudioSessionId());
+        visualizer.setPlayer(mMediaPlayer.getAudioSessionId());
 
     }
 //    @Override

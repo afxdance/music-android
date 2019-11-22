@@ -87,8 +87,14 @@
                 android:layout_weight="1"
                 android:text="Upload"/>
 
+<!--        <Button-->
+<!--            android:id="@+id/button_set_loop"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="Set Loop"/>-->
         <Button
-            android:id="@+id/button_set_loop"
+            android:id="@+id/button_visualize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

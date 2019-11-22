@@ -46,8 +46,6 @@ public interface PlayerAdapter {
 
 //    void pause();
 
-    int getID();
-
     void visualize(LineBarVisualizer obj);
 
     void initializeProgressCallback();
