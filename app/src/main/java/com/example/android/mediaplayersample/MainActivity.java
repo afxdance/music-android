@@ -73,18 +73,7 @@ public final class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mBuilder = new AlertDialog.Builder(this);
-        mBuilder.setTitle("Music Visualizer");
-        mBuilder.setMessage("Audio Recording is required for our visualizer to function properly. Please allow this permission. Thank you!");
-        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                askPermission();
-            }
-        });
-        mBuilder.create();
-        mBuilder.show();
+        checkPermission();
 //        if (permissionChecked){
 //            enableVisualize = true;
 //            setContentView(R.layout.activity_main);
@@ -100,42 +89,48 @@ public final class MainActivity extends AppCompatActivity {
 //        }
     }
 
-    private void askPermission() {
+    private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Here, thisActivity is the current activity
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.RECORD_AUDIO)
-                    != PackageManager.PERMISSION_GRANTED) {
 
-                // Permission is not granted
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.RECORD_AUDIO)) {
-
-                    // Show an explanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
-                } else {
-                    // No explanation needed; request the permission
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.RECORD_AUDIO},
-                            MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
-
-                    // MY_PERMISSIONS_REQUEST_RECORD_AUDIO is an
-                    // app-defined int constant. The callback method gets the
-                    // result of the request.
-
+            mBuilder = new AlertDialog.Builder(this);
+            mBuilder.setTitle("Music Visualizer");
+            mBuilder.setMessage("Audio Recording is required for our visualizer to function properly. Please allow this permission. Thank you!");
+            mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    askPermission();
                 }
-            } else {
-                // Permission has already been granted
-            }
+            });
+            mBuilder.create();
+            mBuilder.show();
+
+        } else {
+            // Permission has already been granted
+            enableVisualize = true;
+            initializeUI();
         }
 
-        //        AppCompatActivity.requestPermissions(MainActivity.this,
-        //                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-        //                1);
+    }
+
+    public void askPermission() {
+
+        // Permission is not granted
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+
+            // MY_PERMISSIONS_REQUEST_RECORD_AUDIO is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+
+        }
     }
 
     @Override
@@ -149,26 +144,17 @@ public final class MainActivity extends AppCompatActivity {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     enableVisualize = true;
+                    permissionChecked = true;
 
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
-                permissionChecked = true;
-                setContentView(R.layout.activity_main);
-                curr_speed = (TextView) findViewById(R.id.speed);
-                initializeUI();
-                initializeSeekbar();
-                initializePlaybackController();
-                Log.d(TAG, "onCreate: finished");
-                Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
-                mToast.setGravity(Gravity.TOP,0,150);
-                mToast.show();
-                return;
             }
 
             // other 'case' lines to check for other
             // permissions this app might request.
+            initializeUI();
         }
     }
 
@@ -191,6 +177,13 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
+        setContentView(R.layout.activity_main);
+        curr_speed = (TextView) findViewById(R.id.speed);
+
+        Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
+        mToast.setGravity(Gravity.TOP, 0, 150);
+        mToast.show();
+
         mTextDebug = (TextView) findViewById(R.id.text_debug);
 //        final Button mPlayButton = (Button) findViewById(R.id.button_play);
         final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
@@ -206,14 +199,17 @@ public final class MainActivity extends AppCompatActivity {
         mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
         mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
 
+        initializeSeekbar();
+        initializePlaybackController();
+
         mPlayButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         int state = mPlayerAdapter.play();
-                        if(state == 1){
+                        if (state == 1) {
                             mPlayButton.setBackgroundResource(R.drawable.play);
-                        }else if(state == 2){
+                        } else if (state == 2) {
                             mPlayButton.setBackgroundResource(R.drawable.pause);
                         }
 
@@ -233,19 +229,19 @@ public final class MainActivity extends AppCompatActivity {
 //                        mPlayerAdapter.setLoop(loopMode);
 //                    }
 //                });
-        if(enableVisualize) {
+        if (enableVisualize) {
             mVisualizeButton.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(mPlayerAdapter.isPlaying()) {
+                            if (mPlayerAdapter.isPlaying()) {
                                 mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
                                 mPlayerAdapter.visualize(mBarVisualizer);
                             }
                         }
                     }
             );
-        }else{
+        } else {
             mVisualizeButton.setText("Visualize (Disabled)");
         }
         mIncreaseSpeedButton.setOnClickListener(
@@ -253,7 +249,7 @@ public final class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         int new_speed = Math.round(100 * mPlayerAdapter.adjustSpeed(1));
-                            curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
+                        curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
 
                     }
                 });
@@ -288,12 +284,11 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent)
-    {
-        if(requestCode == UPLOAD_REQUEST_CODE) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == UPLOAD_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                    Uri uploadedMusic = intent.getData();
-                    mPlayerAdapter.loadMedia(uploadedMusic);
+                Uri uploadedMusic = intent.getData();
+                mPlayerAdapter.loadMedia(uploadedMusic);
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
