@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import android.util.Log;
+import android.widget.TextView;
 
 /**
  * Exposes the functionality of the {@link MediaPlayer} and implements the {@link PlayerAdapter}
@@ -141,7 +142,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
-    public void setLoop(int loopMode) {
+    public void setLoop(int loopMode, TextView startText, TextView endText) {
         //TODO: A/B Loop creation logic.
         /**
          * When loop button is clicked, calls this based on current stage of loop creation.
@@ -163,7 +164,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
             return;
         } else if (loopMode == 0) {
             loopStart = mMediaPlayer.getCurrentPosition();
-            Log.d(TAG, "Set loop start: " + loopStart);
+            startText.setText("Loop Start: " + convertToTime(loopStart));
         } else if (loopMode == 1) {
             loopEnd = mMediaPlayer.getCurrentPosition();
             Log.d(TAG, "Set loop end: " + loopEnd);
@@ -173,11 +174,23 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                 loopEnd = temp;
             }
 
+            startText.setText("Loop Start: " + convertToTime(loopStart));
+            endText.setText("Loop End: " + convertToTime(loopEnd));
+
             looping = true;
-        } else {
+        } else {    // Clear loop
             looping = false;
 
+            startText.setText("Loop Start: N/A");
+            endText.setText("Loop End: N/A");
         }
+    }
+
+    private String convertToTime(int milliseconds) {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds);
+
+        return minutes + ":" + seconds;
     }
 
     @Override

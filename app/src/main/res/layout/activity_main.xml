@@ -72,12 +72,31 @@
                 android:layout_weight="1"
                 android:text="Upload"/>
 
-        <Button
-            android:id="@+id/button_set_loop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Set loop start"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/button_set_loop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Set loop start"/>
+
+                <TextView
+                    android:id="@+id/text_loop_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loop Start: N/A"/>
+
+                <TextView
+                    android:id="@+id/text_loop_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loop End: N/A"/>
+
+            </LinearLayout>
+
 
         <Button
             android:id="@+id/button_increase_speed"

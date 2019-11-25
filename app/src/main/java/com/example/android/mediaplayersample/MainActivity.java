@@ -80,6 +80,8 @@ public final class MainActivity extends AppCompatActivity {
         Button mPauseButton = (Button) findViewById(R.id.button_pause);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
         final Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        final TextView mLoopStartText = (TextView) findViewById(R.id.text_loop_start);
+        final TextView mLoopEndText = (TextView) findViewById(R.id.text_loop_end);
         Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
         Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
@@ -116,8 +118,10 @@ public final class MainActivity extends AppCompatActivity {
                             return;
                         }
 
-                        mPlayerAdapter.setLoop(loopMode);
+                        //start text and end text get handled in MediaPlayerHolder
+                        mPlayerAdapter.setLoop(loopMode, mLoopStartText, mLoopEndText);
                         loopMode++;     // switch to next mode
+
                         int mode = loopMode % 3;
                         if (mode == 0) {
                             mSetLoopButton.setText("Set loop start");
