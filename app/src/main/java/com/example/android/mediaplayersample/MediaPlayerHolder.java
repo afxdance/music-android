@@ -24,13 +24,15 @@ import android.net.Uri;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import android.util.Log;
+import android.widget.TextView;
 
 /**
  * Exposes the functionality of the {@link MediaPlayer} and implements the {@link PlayerAdapter}
  * so that {@link MainActivity} can control music playback.
  */
 public final class MediaPlayerHolder implements PlayerAdapter {
-
+    public static final String TAG = "MediaPlayerHolder";
     public static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 1000;
 
     private final Context mContext;
@@ -39,6 +41,9 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private PlaybackInfoListener mPlaybackInfoListener;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
+    private int loopStart;
+    private int loopEnd;
+    private boolean looping;
 
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
@@ -137,7 +142,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
-    public void setLoop(int loopMode) {
+    public void setLoop(int loopMode, TextView startText, TextView endText) {
         //TODO: A/B Loop creation logic.
         /**
          * When loop button is clicked, calls this based on current stage of loop creation.
@@ -154,6 +159,38 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
         //Hint: You will need to implement additional logic outside of this function.
         //Hint: Try looking at this.startUpdatingCallbackWithPosition(), which runs a task every millisecond.
+        loopMode = loopMode % 3;    // Keep loopMode within the 3 possible valid inputs
+        if (loopMode == -1) {
+            return;
+        } else if (loopMode == 0) {
+            loopStart = mMediaPlayer.getCurrentPosition();
+            startText.setText("Loop Start: " + convertToTime(loopStart));
+        } else if (loopMode == 1) {
+            loopEnd = mMediaPlayer.getCurrentPosition();
+            Log.d(TAG, "Set loop end: " + loopEnd);
+            if (loopStart > loopEnd) {  // Flip start/end if loop is inverted
+                int temp = loopStart;
+                loopStart = loopEnd;
+                loopEnd = temp;
+            }
+
+            startText.setText("Loop Start: " + convertToTime(loopStart));
+            endText.setText("Loop End: " + convertToTime(loopEnd));
+
+            looping = true;
+        } else {    // Clear loop
+            looping = false;
+
+            startText.setText("Loop Start: N/A");
+            endText.setText("Loop End: N/A");
+        }
+    }
+
+    private String convertToTime(int milliseconds) {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds);
+
+        return minutes + ":" + seconds;
     }
 
     @Override
@@ -198,6 +235,14 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                 @Override
                 public void run() {
                     updateProgressCallbackTask();
+                    // Looping
+                    if (looping) {
+                        int curr = mMediaPlayer.getCurrentPosition();
+                        if (curr > loopEnd) {
+                            Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
+                            mMediaPlayer.seekTo(loopStart);
+                        }
+                    }
                 }
             };
         }

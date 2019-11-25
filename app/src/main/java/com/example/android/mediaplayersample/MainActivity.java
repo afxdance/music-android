@@ -79,7 +79,9 @@ public final class MainActivity extends AppCompatActivity {
         final Button mPlayButton = (Button) findViewById(R.id.button_play);
         Button mPauseButton = (Button) findViewById(R.id.button_pause);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
-        Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        final Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        final TextView mLoopStartText = (TextView) findViewById(R.id.text_loop_start);
+        final TextView mLoopEndText = (TextView) findViewById(R.id.text_loop_end);
         Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
         Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
@@ -112,7 +114,22 @@ public final class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.setLoop(loopMode);
+                        if (loopMode == -1) {
+                            return;
+                        }
+
+                        //start text and end text get handled in MediaPlayerHolder
+                        mPlayerAdapter.setLoop(loopMode, mLoopStartText, mLoopEndText);
+                        loopMode++;     // switch to next mode
+
+                        int mode = loopMode % 3;
+                        if (mode == 0) {
+                            mSetLoopButton.setText("Set loop start");
+                        } else if (mode == 1) {
+                            mSetLoopButton.setText("Set loop end");
+                        } else if (mode == 2) {
+                            mSetLoopButton.setText("Clear loop");
+                        }
                     }
                 });
         mIncreaseSpeedButton.setOnClickListener(
@@ -149,6 +166,8 @@ public final class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
         myIntent.setType("audio/*");
         startActivityForResult(myIntent, UPLOAD_REQUEST_CODE);
+
+        loopMode = 0;
     }
 
     @Override

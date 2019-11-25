@@ -17,6 +17,7 @@
 package com.example.android.mediaplayersample;
 
 import android.net.Uri;
+import android.widget.TextView;
 
 /**
  * Allows {@link MainActivity} to control media playback of {@link MediaPlayerHolder}.
@@ -31,7 +32,7 @@ public interface PlayerAdapter {
 
     void play();
 
-    void setLoop(int loopMode);
+    void setLoop(int loopMode, TextView text_start, TextView text_end);
 
     void increaseSpeed();
 
