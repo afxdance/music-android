@@ -24,6 +24,12 @@ import android.widget.TextView;
  */
 public interface PlayerAdapter {
 
+    int getLoopStart();
+
+    int getLoopEnd();
+
+    int getSongLength();
+
     void loadMedia(Uri uri);
 
     void release();
@@ -45,6 +51,8 @@ public interface PlayerAdapter {
     void pause();
 
     void initializeProgressCallback();
+
+    void setDuration();
 
     void seekTo(int position);
 }

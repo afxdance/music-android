@@ -41,8 +41,12 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private PlaybackInfoListener mPlaybackInfoListener;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
-    private int loopStart;
-    private int loopEnd;
+
+
+    private int loopStart = 0;
+    private int loopEnd = 0;
+    private int songLength = 0;
+
     private boolean looping;
 
     public MediaPlayerHolder(Context context) {
@@ -77,6 +81,28 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     public void setPlaybackInfoListener(PlaybackInfoListener listener) {
         mPlaybackInfoListener = listener;
+    }
+
+    @Override
+    public void setDuration() {
+        if (mMediaPlayer != null) {
+            songLength = mMediaPlayer.getDuration();
+        }
+    }
+
+    @Override
+    public int getLoopStart() {
+        return loopStart;
+    }
+
+    @Override
+    public int getLoopEnd() {
+        return loopEnd;
+    }
+
+    @Override
+    public int getSongLength() {
+        return songLength;
     }
 
     // Implements PlaybackControl.
@@ -159,6 +185,8 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
         //Hint: You will need to implement additional logic outside of this function.
         //Hint: Try looking at this.startUpdatingCallbackWithPosition(), which runs a task every millisecond.
+
+        setDuration();
         loopMode = loopMode % 3;    // Keep loopMode within the 3 possible valid inputs
         if (loopMode == -1) {
             return;
