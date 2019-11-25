@@ -36,12 +36,9 @@ import android.widget.TextView;
 public final class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
-    public static final int MEDIA_RES_ID = R.raw.jazz_in_paris;
     public static final int UPLOAD_REQUEST_CODE = 1;
 
-    private TextView mTextDebug;
     private SeekBar mSeekbarAudio;
-    private ScrollView mScrollContainer;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
 
@@ -60,7 +57,6 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //mPlayerAdapter.loadMedia(MEDIA_RES_ID);
         Log.d(TAG, "onStart: create MediaPlayer");
     }
 
@@ -76,7 +72,6 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        //mTextDebug = (TextView) findViewById(R.id.text_debug);
         final Button mPlayButton = (Button) findViewById(R.id.button_play);
         Button mPauseButton = (Button) findViewById(R.id.button_pause);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
@@ -88,7 +83,6 @@ public final class MainActivity extends AppCompatActivity {
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
         Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
-        //mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
 
         final TextView mStartMarker = (TextView) findViewById(R.id.loop_start_marker);
         final View mBeforeLoopBlank = findViewById(R.id.before_loop_blank);
@@ -282,28 +276,7 @@ public final class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStateChanged(@State int state) {
-//            String stateToString = PlaybackInfoListener.convertStateToString(state);
-//            onLogUpdated(String.format("onStateChanged(%s)", stateToString));
         }
 
-        @Override
-        public void onPlaybackCompleted() {
-        }
-
-        @Override
-        public void onLogUpdated(String message) {
-//            if (mTextDebug != null) {
-//                mTextDebug.append(message);
-//                mTextDebug.append("\n");
-//                // Moves the scrollContainer focus to the end.
-//                mScrollContainer.post(
-//                        new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                mScrollContainer.fullScroll(ScrollView.FOCUS_DOWN);
-//                            }
-//                        });
-//            }
-        }
     }
 }
