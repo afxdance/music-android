@@ -20,12 +20,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import java.net.*;
+import java.io.*;
+import android.os.AsyncTask;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 /**
  * Allows playback of a single MP3 file via the UI. It contains a {@link MediaPlayerHolder}
@@ -43,13 +49,125 @@ public final class MainActivity extends AppCompatActivity {
     private ScrollView mScrollContainer;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
+    private Uri uri;
 
     private int loopMode = -1;
+
+    private class MyTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String ... params) {
+            String decodedData = params[0];
+            String jsonText = "";
+            try
+            {
+                Log.d(TAG, decodedData);
+                URL url = new URL(decodedData);
+                Log.d(TAG, url.toString());
+
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                int code = urlConnection.getResponseCode();
+                String codetostring = String.valueOf(code);
+                codetostring += ": connection secured!";
+                Log.d(TAG, codetostring);
+                BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                String inputLine;
+                StringBuilder jsonTextBuilder = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    jsonTextBuilder.append(inputLine);
+                }
+                in.close();
+                jsonText = jsonTextBuilder.toString();
+
+
+            }
+            catch (Exception e)
+            {
+                Log.d(TAG, e.toString());
+            }
+            return jsonText;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d(TAG, result);
+            try {
+                JSONObject obj = new JSONObject(result);
+
+                String music = obj.getString("music");
+
+                byte[] decodedString = Base64.decode(music, Base64.DEFAULT);
+                String s = new String(decodedString, "UTF-8");
+                uri = Uri.parse(s);
+
+                Log.d(TAG, String.valueOf(music));
+            }
+            catch (Exception e)
+            {
+                Log.d(TAG, e.toString());
+            }
+
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //String action = intent.getAction();
+        Uri uri = this.getIntent().getData();
+
+        String encodedData = uri.getEncodedQuery();
+        String decodedData = Uri.decode(encodedData);
+        decodedData = decodedData.substring(9);
+        new MyTask().execute(decodedData);
+        /*String jsonText = "";
+        try
+        {
+            Log.d(TAG, decodedData);
+            URL url = new URL(decodedData);
+            Log.d(TAG, url.toString());
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            int code = urlConnection.getResponseCode();
+            String codetostring = String.valueOf(code);
+            codetostring += "123";
+            Log.d(TAG, codetostring);
+            Log.d(TAG, "didnt work oof");
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+            String inputLine;
+            StringBuilder jsonTextBuilder = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                jsonTextBuilder.append(inputLine);
+                Log.d(TAG, inputLine);
+            }
+            in.close();
+            jsonText = jsonTextBuilder.toString();
+
+
+        }
+        catch (Exception e)
+        {
+            System.out.println("bad link uwu");
+        }*/
+
+
+        //Log.d(TAG, jsonText);
+        Log.d(TAG, "UWU");
+
+        /*try
+        {
+
+
+        }
+        catch (MalformedURLException e)
+        {
+            System.out.println("bad link uwu");
+        } */
+
         initializeUI();
         initializeSeekbar();
         initializePlaybackController();
@@ -165,9 +283,11 @@ public final class MainActivity extends AppCompatActivity {
 
     private void initializePlaybackController() {
         MediaPlayerHolder mMediaPlayerHolder = new MediaPlayerHolder(this);
+        //mMediaPlayerHolder.loadMedia(uri);
         Log.d(TAG, "initializePlaybackController: created MediaPlayerHolder");
         mMediaPlayerHolder.setPlaybackInfoListener(new PlaybackListener());
         mPlayerAdapter = mMediaPlayerHolder;
+        //mPlayerAdapter.loadMedia((uri));
         Log.d(TAG, "initializePlaybackController: MediaPlayerHolder progress callback set");
     }
 
