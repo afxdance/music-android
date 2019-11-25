@@ -215,8 +215,11 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     private String convertToTime(int milliseconds) {
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds);
+//        long minutes =  TimeUnit.MILLISECONDS.toMinutes(milliseconds);
+//        long seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds);
+
+        long minutes = milliseconds / 60000;
+        long seconds = (milliseconds - minutes * 60000) / 1000;
 
         return minutes + ":" + seconds;
     }
