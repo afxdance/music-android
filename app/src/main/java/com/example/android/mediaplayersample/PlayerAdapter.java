@@ -32,6 +32,8 @@ public interface PlayerAdapter {
 
     boolean isPlaying();
 
+    boolean isInitialized();
+
     int play();
 
     void setLoop(int loopMode);
@@ -46,7 +48,9 @@ public interface PlayerAdapter {
 
 //    void pause();
 
-    void visualize(LineBarVisualizer obj);
+    void visualize(LineBarVisualizer visualizer);
+
+    void stopVisualize(LineBarVisualizer visualizer);
 
     void initializeProgressCallback();
 

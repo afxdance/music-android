@@ -23,6 +23,7 @@ import android.media.AudioDeviceInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
@@ -122,6 +123,11 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
+    public boolean isInitialized(){
+        return !(mMediaPlayer == null);
+    }
+
+    @Override
     public int play() {
         if (mMediaPlayer != null){
             logToUI("playbackPlay/Pause()");
@@ -147,11 +153,21 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public void visualize(LineBarVisualizer visualizer){
 
-        //visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue)); // define custom number of bars you want in the visualizer between (10 - 256).
-        visualizer.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
-        visualizer.setDensity(60); // Set your media player to the visualizer.
-        visualizer.setPlayer(mMediaPlayer.getAudioSessionId());
+        if(visualizer.getVisibility() == View.INVISIBLE){
+            visualizer.setVisibility(View.VISIBLE);
+        }else {
+            //visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue)); // define custom number of bars you want in the visualizer between (10 - 256).
+            visualizer.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
+            visualizer.setDensity(60); // Set your media player to the visualizer.
+            visualizer.setPlayer(mMediaPlayer.getAudioSessionId());
+            visualizer.setVisibility(View.VISIBLE);
+        }
 
+
+    }
+    @Override
+    public void stopVisualize(LineBarVisualizer visualizer){
+        visualizer.setVisibility(View.GONE);
     }
 //    @Override
 //    public void pause() {

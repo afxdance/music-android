@@ -65,6 +65,7 @@ public final class MainActivity extends AppCompatActivity {
     private LineBarVisualizer mBarVisualizer;
     private boolean enableVisualize = false;
     private boolean permissionChecked = false;
+    private boolean isVisualizing = false;
     private TextView curr_speed;
 
     private int loopMode = -1;
@@ -194,7 +195,7 @@ public final class MainActivity extends AppCompatActivity {
         Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
         Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
-        Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
+        final Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
 //        mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
         mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
@@ -234,18 +235,33 @@ public final class MainActivity extends AppCompatActivity {
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (mPlayerAdapter.isPlaying()) {
+                            if (mPlayerAdapter.isInitialized()) {
                                 mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
-
-                                mBarVisualizer.setVisibility(View.VISIBLE);
-                                mPlayerAdapter.visualize(mBarVisualizer);
+                                if(!isVisualizing) {
+//                                    mBarVisualizer.setVisibility(View.);
+                                    mPlayerAdapter.visualize(mBarVisualizer);
+                                    isVisualizing = true;
+                                    mVisualizeButton.setText("Visualize Off");
+                                }else{
+                                    mPlayerAdapter.stopVisualize(mBarVisualizer);
+                                    isVisualizing = false;
+                                    mVisualizeButton.setText("Visualize");
+                                }
                             }
                         }
                     }
             );
         } else {
             mVisualizeButton.setText("Visualize (Disabled)");
-        }
+            mVisualizeButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            askPermission();
+                            }
+                        });
+                    }
+
         mIncreaseSpeedButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -348,7 +364,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onStateChanged(@State int state) {
             String stateToString = PlaybackInfoListener.convertStateToString(state);
-            //onLogUpdated(String.format("onStateChanged(%s)", stateToString));
+            onLogUpdated(String.format("onStateChanged(%s)", stateToString));
         }
 
         @Override
