@@ -183,8 +183,8 @@ public final class MainActivity extends AppCompatActivity {
         Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
         mToast.setGravity(Gravity.TOP, 0, 150);
         mToast.show();
-
-        mTextDebug = (TextView) findViewById(R.id.text_debug);
+//
+//        mTextDebug = (TextView) findViewById(R.id.text_debug);
 //        final Button mPlayButton = (Button) findViewById(R.id.button_play);
         final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
 //        Button mPauseButton = (Button) findViewById(R.id.button_pause);
@@ -196,7 +196,7 @@ public final class MainActivity extends AppCompatActivity {
         Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
         Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
-        mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
+//        mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
         mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
 
         initializeSeekbar();
@@ -236,6 +236,8 @@ public final class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             if (mPlayerAdapter.isPlaying()) {
                                 mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
+
+                                mBarVisualizer.setVisibility(View.VISIBLE);
                                 mPlayerAdapter.visualize(mBarVisualizer);
                             }
                         }
@@ -346,7 +348,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onStateChanged(@State int state) {
             String stateToString = PlaybackInfoListener.convertStateToString(state);
-            onLogUpdated(String.format("onStateChanged(%s)", stateToString));
+            //onLogUpdated(String.format("onStateChanged(%s)", stateToString));
         }
 
         @Override

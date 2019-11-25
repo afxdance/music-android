@@ -149,7 +149,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
         //visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue)); // define custom number of bars you want in the visualizer between (10 - 256).
         visualizer.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
-        visualizer.setDensity(35); // Set your media player to the visualizer.
+        visualizer.setDensity(60); // Set your media player to the visualizer.
         visualizer.setPlayer(mMediaPlayer.getAudioSessionId());
 
     }
@@ -297,9 +297,9 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     private void logToUI(String message) {
-        if (mPlaybackInfoListener != null) {
-            mPlaybackInfoListener.onLogUpdated(message);
-        }
+//        if (mPlaybackInfoListener != null) {
+//            mPlaybackInfoListener.onLogUpdated(message);
+//        }
     }
 
 }
