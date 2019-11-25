@@ -147,10 +147,10 @@ public final class MediaPlayerHolder implements PlayerAdapter {
          * When loop button is clicked, calls this based on current stage of loop creation.
          *
          * Stages:
-         *  - 0: No music uploaded. No changes made to loop.
-         *  - 1: Set start of loop
-         *  - 2: Set end of loop. If start point is after end point, still creates loop properly.
-         *  - 3: Clear loop start and end.
+         *  - -1: No music uploaded. No changes made to loop.
+         *  - 0: Set start of loop
+         *  - 1: Set end of loop. If start point is after end point, still creates loop properly.
+         *  - 2: Clear loop start and end.
          *
          * Reference website implementation at function setLoop() in audio.js:
          * https://github.com/afxdance/music/blob/master/audio.js
@@ -158,7 +158,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
         //Hint: You will need to implement additional logic outside of this function.
         //Hint: Try looking at this.startUpdatingCallbackWithPosition(), which runs a task every millisecond.
-        loopMode = loopMode % 4;    // Keep loopMode within the 4 possible inputs
+        loopMode = loopMode % 3;    // Keep loopMode within the 3 possible valid inputs
         if (loopMode == -1) {
             return;
         } else if (loopMode == 0) {
@@ -222,11 +222,9 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                 @Override
                 public void run() {
                     updateProgressCallbackTask();
-                    Log.d(TAG, "____");
                     // Looping
                     if (looping) {
                         int curr = mMediaPlayer.getCurrentPosition();
-                        Log.d(TAG, "LOOPING");
                         if (curr > loopEnd) {
                             Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
                             mMediaPlayer.seekTo(loopStart);
