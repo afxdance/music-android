@@ -288,9 +288,9 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     private void logToUI(String message) {
-        if (mPlaybackInfoListener != null) {
-            mPlaybackInfoListener.onLogUpdated(message);
-        }
+//        if (mPlaybackInfoListener != null) {
+//            mPlaybackInfoListener.onLogUpdated(message);
+//    }
     }
 
 }

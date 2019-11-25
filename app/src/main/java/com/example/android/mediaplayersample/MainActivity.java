@@ -75,7 +75,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        mTextDebug = (TextView) findViewById(R.id.text_debug);
+        //mTextDebug = (TextView) findViewById(R.id.text_debug);
         final Button mPlayButton = (Button) findViewById(R.id.button_play);
         Button mPauseButton = (Button) findViewById(R.id.button_pause);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
@@ -87,7 +87,7 @@ public final class MainActivity extends AppCompatActivity {
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
         Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
-        mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
+        //mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
 
         mPauseButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -176,6 +176,8 @@ public final class MainActivity extends AppCompatActivity {
         if(requestCode == UPLOAD_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                     Uri uploadedMusic = intent.getData();
+                    Log.d(TAG, "uploaded music uri is:");
+                    Log.d(TAG, uploadedMusic.toString());
                     mPlayerAdapter.loadMedia(uploadedMusic);
             }
         }
@@ -233,8 +235,8 @@ public final class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStateChanged(@State int state) {
-            String stateToString = PlaybackInfoListener.convertStateToString(state);
-            onLogUpdated(String.format("onStateChanged(%s)", stateToString));
+//            String stateToString = PlaybackInfoListener.convertStateToString(state);
+//            onLogUpdated(String.format("onStateChanged(%s)", stateToString));
         }
 
         @Override
@@ -243,18 +245,18 @@ public final class MainActivity extends AppCompatActivity {
 
         @Override
         public void onLogUpdated(String message) {
-            if (mTextDebug != null) {
-                mTextDebug.append(message);
-                mTextDebug.append("\n");
-                // Moves the scrollContainer focus to the end.
-                mScrollContainer.post(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                mScrollContainer.fullScroll(ScrollView.FOCUS_DOWN);
-                            }
-                        });
-            }
+//            if (mTextDebug != null) {
+//                mTextDebug.append(message);
+//                mTextDebug.append("\n");
+//                // Moves the scrollContainer focus to the end.
+//                mScrollContainer.post(
+//                        new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mScrollContainer.fullScroll(ScrollView.FOCUS_DOWN);
+//                            }
+//                        });
+//            }
         }
     }
 }
