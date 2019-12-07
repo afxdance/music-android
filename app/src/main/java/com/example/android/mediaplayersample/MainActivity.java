@@ -33,6 +33,7 @@ import android.os.AsyncTask;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+
 /**
  * Allows playback of a single MP3 file via the UI. It contains a {@link MediaPlayerHolder}
  * which implements the {@link PlayerAdapter} interface that the activity uses to control
@@ -96,11 +97,21 @@ public final class MainActivity extends AppCompatActivity {
 
                 String music = obj.getString("music");
 
-                byte[] decodedString = Base64.decode(music, Base64.DEFAULT);
+                Log.d(TAG, "music string is this: " + music);
+                String prebase64 = "data:audio/mp3;base64,";
+                String base64stuff = music.substring(prebase64.length());
+
+                byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
                 String s = new String(decodedString, "UTF-8");
                 uri = Uri.parse(s);
+                Log.d(TAG, uri.toString());
+                Log.d(TAG, "loading music");
+                mPlayerAdapter.release();
+                //mPlayerAdapter = null;
+                mPlayerAdapter.loadMedia(uri);
 
-                Log.d(TAG, String.valueOf(music));
+
+
             }
             catch (Exception e)
             {
@@ -124,6 +135,7 @@ public final class MainActivity extends AppCompatActivity {
         String decodedData = Uri.decode(encodedData);
         decodedData = decodedData.substring(9);
         new MyTask().execute(decodedData);
+
         /*String jsonText = "";
         try
         {
