@@ -169,11 +169,11 @@ public final class MainActivity extends AppCompatActivity {
         final Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
         final TextView mLoopStartText = (TextView) findViewById(R.id.text_loop_start);
         final TextView mLoopEndText = (TextView) findViewById(R.id.text_loop_end);
-        Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
-        Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
-        Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
-        Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
-        final Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
+        ImageButton mIncreaseSpeedButton = (ImageButton) findViewById(R.id.button_increase_speed);
+        ImageButton mDecreaseSpeedButton = (ImageButton) findViewById(R.id.button_decrease_speed);
+        ImageButton mSkipForwardButton = (ImageButton) findViewById(R.id.button_skip_forward);
+        ImageButton mSkipBackwardButton = (ImageButton) findViewById(R.id.button_skip_backward);
+        final ImageButton mVisualizeButton = (ImageButton) findViewById(R.id.button_visualize);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
 
         final TextView mStartMarker = (TextView) findViewById(R.id.loop_start_marker);
@@ -216,18 +216,18 @@ public final class MainActivity extends AppCompatActivity {
                                 if (!isVisualizing) {
                                     mPlayerAdapter.visualize(mBarVisualizer);
                                     isVisualizing = true;
-                                    mVisualizeButton.setText("Visualize Off");
+                                    // mVisualizeButton.setText("Visualize Off");
                                 } else {
                                     mPlayerAdapter.stopVisualize(mBarVisualizer);
                                     isVisualizing = false;
-                                    mVisualizeButton.setText("Visualize");
+                                    // mVisualizeButton.setText("Visualize");
                                 }
                             }
                         }
                     }
             );
         } else {
-            mVisualizeButton.setText("Visualize (Disabled)");
+            // mVisualizeButton.setText("Visualize (Disabled)");
             mVisualizeButton.setOnClickListener(
                     new View.OnClickListener() {
                         @Override

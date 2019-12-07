@@ -129,12 +129,12 @@
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/minus" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/button_set_loop"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/replay" />
+                    android:text="Set Loop Start" />
 
                 <ImageButton
                     android:id="@+id/button_increase_speed"
@@ -187,7 +187,7 @@
                     android:background="@drawable/eject"
                     />
 
-                <Button
+                <ImageButton
                     android:id="@+id/button_visualize"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
