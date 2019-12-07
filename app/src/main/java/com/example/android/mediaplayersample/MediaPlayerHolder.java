@@ -152,7 +152,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     @Override
     public void setLoop(int loopMode, TextView startText, TextView endText) {
-        //TODO: A/B Loop creation logic.
         /**
          * When loop button is clicked, calls this based on current stage of loop creation.
          *
@@ -201,7 +200,11 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         long minutes = milliseconds / 60000;
         long seconds = (milliseconds - minutes * 60000) / 1000;
 
-        return minutes + ":" + seconds;
+        if (seconds < 10) {
+            return minutes + ":0" + seconds;
+        } else {
+            return minutes + ":" + seconds;
+        }
     }
 
     @Override
