@@ -30,164 +30,170 @@
         android:layout_height="150dp"
         android:visibility="gone"/>
 
-    <SeekBar
-        android:id="@+id/seekbar_audio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <View
-            android:id="@+id/before_loop_blank"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0"/>
-
-        <TextView
-            android:id="@+id/loop_start_marker"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:visibility="invisible"
-            android:text="start" />
-
-        <View
-            android:id="@+id/in_between_loop_blank"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0"/>
-
-        <TextView
-            android:id="@+id/loop_end_marker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="0"
-            android:visibility="invisible"
-            android:text="end" />
-
-        <View
-            android:id="@+id/after_loop_blank"
-            android:layout_width="0dp"
-            android:layout_weight="0"
-            android:layout_height="0dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/speed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Current Speed: 100%" />
-
-
-        <TextView
-            android:id="@+id/text_loop_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loop Start: N/A" />
-
-        <TextView
-            android:id="@+id/text_loop_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loop End: N/A" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center_horizontal"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
 
+            <SeekBar
+                android:id="@+id/seekbar_audio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"/>
 
-            <Button
-                android:id="@+id/button_skip_backward"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/before_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0"/>
+                <View
+                    android:id="@+id/before_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0"/>
+
+                <TextView
+                    android:id="@+id/loop_start_marker"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:visibility="invisible"
+                    android:text="start" />
+
+                <View
+                    android:id="@+id/in_between_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0"/>
+
+                <TextView
+                    android:id="@+id/loop_end_marker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="0"
+                    android:visibility="invisible"
+                    android:text="end" />
+
+                <View
+                    android:id="@+id/after_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_weight="0"
+                    android:layout_height="0dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="-5s" />
+                android:text="Current Speed: 100%" />
 
-            <ImageButton
-                android:id="@+id/button_play"
-                android:layout_width="76dp"
-                android:layout_height="70dp"
-                android:background="@drawable/play"/>
-
-            <Button
-                android:id="@+id/button_skip_forward"
+            <TextView
+                android:id="@+id/text_loop_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+5s" />
+                android:text="Loop Start: N/A" />
+
+            <TextView
+                android:id="@+id/text_loop_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loop End: N/A" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/button_decrease_speed"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/minus" />
+
+                <Button
+                    android:id="@+id/button_set_loop"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Set Loop Start" />
+
+                <ImageButton
+                    android:id="@+id/button_increase_speed"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/plus" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/button_skip_backward"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/backwards" />
+
+                <ImageButton
+                    android:id="@+id/button_play"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/play" />
+
+                <ImageButton
+                    android:id="@+id/button_skip_forward"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/fastforward" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_upload"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/eject"
+                    />
+
+                <ImageButton
+                    android:id="@+id/button_visualize"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/music" />
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_decrease_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Speed -5%" />
-
-            <Button
-                android:id="@+id/button_increase_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:text="Speed +5%" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_set_loop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Set Loop" />
-
-            <Button
-                android:id="@+id/button_upload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Upload" />
-
-            <Button
-                android:id="@+id/button_visualize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Visualize" />
-
-        </LinearLayout>
-
-
     </LinearLayout>
-
 </LinearLayout>
