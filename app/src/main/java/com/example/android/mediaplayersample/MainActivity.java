@@ -176,10 +176,10 @@ public final class MainActivity extends AppCompatActivity {
         final Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
 
-        final TextView mStartMarker = (TextView) findViewById(R.id.loop_start_marker);
+        final View mStartMarker = findViewById(R.id.loop_start_marker);
         final View mBeforeLoopBlank = findViewById(R.id.before_loop_blank);
         final View mBetweenLoopBlank = findViewById(R.id.in_between_loop_blank);
-        final TextView mEndMarker = (TextView) findViewById(R.id.loop_end_marker);
+        final View mEndMarker = findViewById(R.id.loop_end_marker);
         final View mAfterLoopBlank = findViewById(R.id.after_loop_blank);
         mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
 
@@ -260,7 +260,7 @@ public final class MainActivity extends AppCompatActivity {
                             LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(30, 100, 0);
                             mStartMarker.setLayoutParams(params);
 
                             LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
@@ -271,10 +271,12 @@ public final class MainActivity extends AppCompatActivity {
 
                             mSetLoopButton.setText("Set loop start");
                         } else if (mode == 1) {
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.015F);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1 - loopStart/songLength);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 100, 0);//1 - loopStart/songLength);
                             mStartMarker.setLayoutParams(params);
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - loopStart/songLength);
+                            mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
                             mStartMarker.setVisibility(View.VISIBLE);
                             mSetLoopButton.setText("Set loop end");
@@ -283,15 +285,17 @@ public final class MainActivity extends AppCompatActivity {
                             LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 100, 0);
                             mStartMarker.setLayoutParams(params);
 
-                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, (loopEnd - loopStart)/songLength);
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(50, 100, (loopEnd - loopStart)/songLength - 0.1F);
                             mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
 
                             LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd)/songLength);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
+                            LinearLayout.LayoutParams endMarkerParams = new LinearLayout.LayoutParams(20, 100, 0);
+                            mEndMarker.setLayoutParams(endMarkerParams);
                             mEndMarker.setVisibility(View.VISIBLE);
 
                             mSetLoopButton.setText("Clear loop");

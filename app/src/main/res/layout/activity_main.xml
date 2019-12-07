@@ -30,55 +30,61 @@
         android:layout_height="150dp"
         android:visibility="gone"/>
 
-    <SeekBar
-        android:id="@+id/seekbar_audio"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <SeekBar
+            android:id="@+id/seekbar_audio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-        <View
-            android:id="@+id/before_loop_blank"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0"/>
-
-        <TextView
-            android:id="@+id/loop_start_marker"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:visibility="invisible"
-            android:text="start" />
+            android:orientation="horizontal">
 
-        <View
-            android:id="@+id/in_between_loop_blank"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0"/>
+            <View
+                android:id="@+id/before_loop_blank"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0"/>
 
-        <TextView
-            android:id="@+id/loop_end_marker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="0"
-            android:visibility="invisible"
-            android:text="end" />
+            <View
+                android:id="@+id/loop_start_marker"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0"
+                android:visibility="invisible"
+                android:background="#a31aff"/>
 
-        <View
-            android:id="@+id/after_loop_blank"
-            android:layout_width="0dp"
-            android:layout_weight="0"
-            android:layout_height="0dp"/>
+            <View
+                android:id="@+id/in_between_loop_blank"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0"
+                android:background="#64ffd1f4"/>
 
-    </LinearLayout>
+            <View
+                android:id="@+id/loop_end_marker"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0"
+                android:visibility="invisible"
+                android:background="#a31aff"/>
+
+            <View
+                android:id="@+id/after_loop_blank"
+                android:layout_width="0dp"
+                android:layout_weight="0"
+                android:layout_height="0dp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
