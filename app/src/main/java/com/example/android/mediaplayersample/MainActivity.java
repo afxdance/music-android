@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -33,12 +32,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
 
 /**
@@ -49,13 +47,9 @@ import com.chibde.visualizer.LineBarVisualizer;
 public final class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
-    public static final int MEDIA_RES_ID = R.raw.jazz_in_paris;
     public static final int UPLOAD_REQUEST_CODE = 1;
 
-    private TextView mTextDebug;
-
     private SeekBar mSeekbarAudio;
-    private ScrollView mScrollContainer;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
 
@@ -75,19 +69,6 @@ public final class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         checkPermission();
-//        if (permissionChecked){
-//            enableVisualize = true;
-//            setContentView(R.layout.activity_main);
-//            curr_speed = (TextView) findViewById(R.id.speed);
-//            initializeUI();
-//            initializeSeekbar();
-//            initializePlaybackController();
-//            Log.d(TAG, "onCreate: finished");
-//            Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
-//            mToast.setGravity(Gravity.TOP,0,150);
-//            mToast.show();
-//
-//        }
     }
 
     private void checkPermission() {
@@ -162,7 +143,6 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //mPlayerAdapter.loadMedia(MEDIA_RES_ID);
         Log.d(TAG, "onStart: create MediaPlayer");
     }
 
@@ -184,20 +164,23 @@ public final class MainActivity extends AppCompatActivity {
         Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
         mToast.setGravity(Gravity.TOP, 0, 150);
         mToast.show();
-//
-//        mTextDebug = (TextView) findViewById(R.id.text_debug);
-//        final Button mPlayButton = (Button) findViewById(R.id.button_play);
         final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
-//        Button mPauseButton = (Button) findViewById(R.id.button_pause);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
-//       Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        final Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        final TextView mLoopStartText = (TextView) findViewById(R.id.text_loop_start);
+        final TextView mLoopEndText = (TextView) findViewById(R.id.text_loop_end);
         Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
         Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
         Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
         final Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
-//        mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
+
+        final TextView mStartMarker = (TextView) findViewById(R.id.loop_start_marker);
+        final View mBeforeLoopBlank = findViewById(R.id.before_loop_blank);
+        final View mBetweenLoopBlank = findViewById(R.id.in_between_loop_blank);
+        final TextView mEndMarker = (TextView) findViewById(R.id.loop_end_marker);
+        final View mAfterLoopBlank = findViewById(R.id.after_loop_blank);
         mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
 
         initializeSeekbar();
@@ -223,13 +206,6 @@ public final class MainActivity extends AppCompatActivity {
                         onUpload();
                     }
                 });
-//        mSetLoopButton.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        mPlayerAdapter.setLoop(loopMode);
-//                    }
-//                });
         if (enableVisualize) {
             mVisualizeButton.setOnClickListener(
                     new View.OnClickListener() {
@@ -237,11 +213,11 @@ public final class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             if (mPlayerAdapter.isInitialized()) {
                                 mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
-                                if(!isVisualizing) {
+                                if (!isVisualizing) {
                                     mPlayerAdapter.visualize(mBarVisualizer);
                                     isVisualizing = true;
                                     mVisualizeButton.setText("Visualize Off");
-                                }else{
+                                } else {
                                     mPlayerAdapter.stopVisualize(mBarVisualizer);
                                     isVisualizing = false;
                                     mVisualizeButton.setText("Visualize");
@@ -257,10 +233,71 @@ public final class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             askPermission();
-                            }
-                        });
-                    }
+                        }
+                    });
+        }
+        mSetLoopButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (loopMode == -1) {
+                            return;
+                        }
 
+                        //start text and end text get handled in MediaPlayerHolder
+                        mPlayerAdapter.setLoop(loopMode, mLoopStartText, mLoopEndText);
+
+                        float songLength = (float) mPlayerAdapter.getSongLength();
+                        float loopStart = (float) mPlayerAdapter.getLoopStart();
+                        float loopEnd = (float) mPlayerAdapter.getLoopEnd();
+
+                        loopMode++;     // switch to next mode
+
+                        int mode = loopMode % 3;
+                        if (mode == 0) {
+                            mStartMarker.setVisibility(View.INVISIBLE);
+                            mEndMarker.setVisibility(View.INVISIBLE);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
+                            mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
+
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+                            mStartMarker.setLayoutParams(params);
+
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
+                            mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
+
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
+                            mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
+
+                            mSetLoopButton.setText("Set loop start");
+                        } else if (mode == 1) {
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1 - loopStart/songLength);
+                            mStartMarker.setLayoutParams(params);
+
+                            mStartMarker.setVisibility(View.VISIBLE);
+                            mSetLoopButton.setText("Set loop end");
+                        } else if (mode == 2) {
+
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
+
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+                            mStartMarker.setLayoutParams(params);
+
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, (loopEnd - loopStart)/songLength);
+                            mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
+
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd)/songLength);
+                            mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
+
+                            mEndMarker.setVisibility(View.VISIBLE);
+
+                            mSetLoopButton.setText("Clear loop");
+                        }
+                    }
+                });
         mIncreaseSpeedButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -298,6 +335,8 @@ public final class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
         myIntent.setType("audio/*");
         startActivityForResult(myIntent, UPLOAD_REQUEST_CODE);
+
+        loopMode = 0;
     }
 
     @Override
@@ -362,28 +401,7 @@ public final class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStateChanged(@State int state) {
-            String stateToString = PlaybackInfoListener.convertStateToString(state);
-            onLogUpdated(String.format("onStateChanged(%s)", stateToString));
         }
 
-        @Override
-        public void onPlaybackCompleted() {
-        }
-
-        @Override
-        public void onLogUpdated(String message) {
-            if (mTextDebug != null) {
-                mTextDebug.append(message);
-                mTextDebug.append("\n");
-                // Moves the scrollContainer focus to the end.
-                mScrollContainer.post(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                mScrollContainer.fullScroll(ScrollView.FOCUS_DOWN);
-                            }
-                        });
-            }
-        }
     }
 }
