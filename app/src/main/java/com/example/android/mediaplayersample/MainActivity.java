@@ -216,18 +216,15 @@ public final class MainActivity extends AppCompatActivity {
                                 if (!isVisualizing) {
                                     mPlayerAdapter.visualize(mBarVisualizer);
                                     isVisualizing = true;
-                                    // mVisualizeButton.setText("Visualize Off");
                                 } else {
                                     mPlayerAdapter.stopVisualize(mBarVisualizer);
                                     isVisualizing = false;
-                                    // mVisualizeButton.setText("Visualize");
                                 }
                             }
                         }
                     }
             );
         } else {
-            // mVisualizeButton.setText("Visualize (Disabled)");
             mVisualizeButton.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
