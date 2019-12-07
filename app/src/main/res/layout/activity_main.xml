@@ -49,11 +49,71 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/before_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0"/>
+                <View
+                    android:id="@+id/before_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0"/>
+
+                <TextView
+                    android:id="@+id/loop_start_marker"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:visibility="invisible"
+                    android:text="start" />
+
+                <View
+                    android:id="@+id/in_between_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0"/>
+
+                <TextView
+                    android:id="@+id/loop_end_marker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="0"
+                    android:visibility="invisible"
+                    android:text="end" />
+
+                <View
+                    android:id="@+id/after_loop_blank"
+                    android:layout_width="0dp"
+                    android:layout_weight="0"
+                    android:layout_height="0dp"/>
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Current Speed: 100%" />
+
+            <TextView
+                android:id="@+id/text_loop_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loop Start: N/A" />
+
+            <TextView
+                android:id="@+id/text_loop_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loop End: N/A" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
