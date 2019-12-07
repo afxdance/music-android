@@ -83,7 +83,6 @@
             android:orientation="horizontal"
             android:layout_margin="8dp"
             android:gravity="center">
-
             <Button
                 android:id="@+id/button_increase_speed"
                 android:layout_width="wrap_content"

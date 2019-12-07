@@ -256,6 +256,14 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         }
     }
 
+    @Override
+    public double[] getTime(){
+        double[] time = new double[2];
+        time[0] = mMediaPlayer.getCurrentPosition() * Math.floorDiv(1000, 60);
+        time[1] = mMediaPlayer.getCurrentPosition() * Math.round(Math.floorMod(1000, 60));
+        return time;
+    }
+
     /**
      * Syncs the mMediaPlayer position with mPlaybackProgressCallback via recurring task.
      */

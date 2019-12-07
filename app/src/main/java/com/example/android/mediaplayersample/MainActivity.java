@@ -238,7 +238,6 @@ public final class MainActivity extends AppCompatActivity {
                             if (mPlayerAdapter.isInitialized()) {
                                 mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
                                 if(!isVisualizing) {
-//                                    mBarVisualizer.setVisibility(View.);
                                     mPlayerAdapter.visualize(mBarVisualizer);
                                     isVisualizing = true;
                                     mVisualizeButton.setText("Visualize Off");
