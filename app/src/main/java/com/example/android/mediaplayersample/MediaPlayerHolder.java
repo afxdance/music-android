@@ -17,9 +17,13 @@
 package com.example.android.mediaplayersample;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+
+import com.chibde.visualizer.BarVisualizer;
+import com.chibde.visualizer.LineBarVisualizer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,10 +41,11 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     private final Context mContext;
     private MediaPlayer mMediaPlayer;
-    private int mResourceId;
     private PlaybackInfoListener mPlaybackInfoListener;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
+
+    private float speed = 1.00f;
 
 
     private int loopStart = 0;
@@ -94,6 +99,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     // Implements PlaybackControl.
+    @Override
     public void loadMedia(Uri uri) {
 
         initializeMediaPlayer();
@@ -130,24 +136,49 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
-    public void play() {
-        if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
-           mMediaPlayer.start();
-            if (mPlaybackInfoListener != null) {
-                mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PLAYING);
-            }
-            startUpdatingCallbackWithPosition();
-        }
+    public boolean isInitialized(){
+        return !(mMediaPlayer == null);
     }
 
     @Override
-    public void pause() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.pause();
-            if (mPlaybackInfoListener != null) {
-                mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PAUSED);
+    public int play() {
+        if (mMediaPlayer != null){
+            startUpdatingCallbackWithPosition();
+            if(mMediaPlayer.isPlaying()) {
+                mMediaPlayer.pause();
+                if (mPlaybackInfoListener != null) {
+                    mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PAUSED);
+                }
+                return 1;
+            }else{
+                mMediaPlayer.start();
+                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+                if (mPlaybackInfoListener != null) {
+                    mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PLAYING);
+                }
+                return 2;
             }
         }
+        return 3;
+    }
+
+    @Override
+    public void visualize(LineBarVisualizer visualizer){
+
+        if(visualizer.getVisibility() == View.INVISIBLE){
+            visualizer.setVisibility(View.VISIBLE);
+        }else {
+            //visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue)); // define custom number of bars you want in the visualizer between (10 - 256).
+            visualizer.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
+            visualizer.setDensity(60); // Set your media player to the visualizer.
+            visualizer.setPlayer(mMediaPlayer.getAudioSessionId());
+            visualizer.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    public void stopVisualize(LineBarVisualizer visualizer) {
+        visualizer.setVisibility(View.GONE);
     }
 
     @Override
@@ -211,22 +242,33 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     public void skipForward() {
         //TODO: Skips position forwards 5 seconds.
         //Hint: use this.seekTo(position) and MediaPlayer.getCurrentPosition()...
+        if(mMediaPlayer.isPlaying()) {
+            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() + 5000);
+        }
     }
 
     @Override
     public void skipBackward() {
         //TODO: Skips position backwards 5 seconds.
+        if(mMediaPlayer.isPlaying()) {
+            mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - 5000);
+        }
     }
 
     @Override
-    public void increaseSpeed() {
+    public float adjustSpeed(int crease) {
         //TODO: Increases playback speed by 5%
         //Hint: use MediaPlayer.setPlaybackParams()...
-    }
-
-    @Override
-    public void decreaseSpeed() {
-        //TODO: Decreases playback speed by 5%
+        if(speed > 0 || crease == 1) {
+            speed += crease * 0.05f;
+            if(mMediaPlayer == null){
+                return speed;
+            }
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+            }
+        }
+        return speed;
     }
 
     @Override
@@ -234,6 +276,14 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         if (mMediaPlayer != null) {
             mMediaPlayer.seekTo(position);
         }
+    }
+
+    @Override
+    public double[] getTime(){
+        double[] time = new double[2];
+        time[0] = mMediaPlayer.getCurrentPosition() * Math.floorDiv(1000, 60);
+        time[1] = mMediaPlayer.getCurrentPosition() * Math.round(Math.floorMod(1000, 60));
+        return time;
     }
 
     /**

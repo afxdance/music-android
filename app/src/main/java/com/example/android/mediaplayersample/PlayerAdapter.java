@@ -19,6 +19,9 @@ package com.example.android.mediaplayersample;
 import android.net.Uri;
 import android.widget.TextView;
 
+import com.chibde.visualizer.BarVisualizer;
+import com.chibde.visualizer.LineBarVisualizer;
+
 /**
  * Allows {@link MainActivity} to control media playback of {@link MediaPlayerHolder}.
  */
@@ -36,23 +39,27 @@ public interface PlayerAdapter {
 
     boolean isPlaying();
 
-    void play();
+    boolean isInitialized();
+
+    int play();
 
     void setLoop(int loopMode, TextView text_start, TextView text_end);
 
-    void increaseSpeed();
-
-    void decreaseSpeed();
+    float adjustSpeed(int crease);
 
     void skipForward();
 
     void skipBackward();
 
-    void pause();
+    void visualize(LineBarVisualizer visualizer);
+
+    void stopVisualize(LineBarVisualizer visualizer);
 
     void initializeProgressCallback();
 
     void setDuration();
 
     void seekTo(int position);
+
+    double[] getTime();
 }
