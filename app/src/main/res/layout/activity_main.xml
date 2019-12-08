@@ -113,35 +113,6 @@
             android:text="Loop End: N/A" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/button_decrease_speed"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/minus" />
-
-            <Button
-                android:id="@+id/button_set_loop"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginEnd="8dp"
-                android:text="Set Loop Start" />
-
-            <ImageButton
-                android:id="@+id/button_increase_speed"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:background="@drawable/plus" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
@@ -176,6 +147,35 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <ImageButton
+                android:id="@+id/button_decrease_speed"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/minus" />
+
+            <Button
+                android:id="@+id/button_set_loop"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="8dp"
+                android:text="Set Loop Start" />
+
+            <ImageButton
+                android:id="@+id/button_increase_speed"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/plus" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/button_upload"
                 android:layout_width="70dp"
@@ -188,7 +188,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/music" />
+                android:background="@drawable/waveform" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
