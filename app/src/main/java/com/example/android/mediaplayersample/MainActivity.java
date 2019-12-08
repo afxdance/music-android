@@ -279,7 +279,7 @@ public final class MainActivity extends AppCompatActivity {
                             mSetLoopButton.setText("Set loop end");
                         } else if (mode == 2) {
 
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.015F);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 100, 0);
