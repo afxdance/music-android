@@ -59,11 +59,6 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="0"/>
-                <View
-                    android:id="@+id/before_loop_blank"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="0"/>
 
                 <TextView
                     android:id="@+id/loop_start_marker"

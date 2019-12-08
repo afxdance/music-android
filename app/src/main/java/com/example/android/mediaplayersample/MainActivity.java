@@ -17,6 +17,7 @@
 package com.example.android.mediaplayersample;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,9 +57,9 @@ public final class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder mBuilder;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private Context mContext = this;
+    private Activity mActivity = this;
     private LineBarVisualizer mBarVisualizer;
     private boolean enableVisualize = false;
-    private boolean permissionChecked = false;
     private boolean isVisualizing = false;
     private TextView curr_speed;
 
@@ -74,20 +75,8 @@ public final class MainActivity extends AppCompatActivity {
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            mBuilder = new AlertDialog.Builder(this);
-            mBuilder.setTitle("Music Visualizer");
-            mBuilder.setMessage("Audio Recording is required for our visualizer to function properly. Please allow this permission. Thank you!");
-            mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                    askPermission();
-                }
-            });
-            mBuilder.create();
-            mBuilder.show();
-
+            askPermission();
+            initializeUI();
         } else {
             // Permission has already been granted
             enableVisualize = true;
@@ -98,21 +87,30 @@ public final class MainActivity extends AppCompatActivity {
 
     public void askPermission() {
 
-        // Permission is not granted
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
+        mBuilder = new AlertDialog.Builder(this);
+        mBuilder.setTitle("Music Visualizer");
+        mBuilder.setMessage("Audio Recording is required for our visualizer to function properly. Please allow this permission. Thank you!");
+        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                // Permission is not granted
+                // Here, thisActivity is the current activity
 
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO},
-                    MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+                ActivityCompat.requestPermissions(mActivity,
+                        new String[]{Manifest.permission.RECORD_AUDIO},
+                        MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
 
-            // MY_PERMISSIONS_REQUEST_RECORD_AUDIO is an
-            // app-defined int constant. The callback method gets the
-            // result of the request.
+                // MY_PERMISSIONS_REQUEST_RECORD_AUDIO is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
 
-        }
+
+            }
+        });
+        mBuilder.create();
+        mBuilder.show();
+
     }
 
     @Override
@@ -126,17 +124,9 @@ public final class MainActivity extends AppCompatActivity {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     enableVisualize = true;
-                    permissionChecked = true;
-
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    checkTurnOnVisualize();
                 }
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
-            initializeUI();
         }
     }
 
@@ -206,33 +196,19 @@ public final class MainActivity extends AppCompatActivity {
                         onUpload();
                     }
                 });
-        if (enableVisualize) {
-            mVisualizeButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (mPlayerAdapter.isInitialized()) {
-                                mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
-                                if (!isVisualizing) {
-                                    mPlayerAdapter.visualize(mBarVisualizer);
-                                    isVisualizing = true;
-                                } else {
-                                    mPlayerAdapter.stopVisualize(mBarVisualizer);
-                                    isVisualizing = false;
-                                }
-                            }
+
+        mVisualizeButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!enableVisualize) {
+                            askPermission();
+                        } else {
+                            checkTurnOnVisualize();
                         }
                     }
-            );
-        } else {
-            mVisualizeButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            askPermission();
-                        }
-                    });
-        }
+                }
+        );
         mSetLoopButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -268,25 +244,25 @@ public final class MainActivity extends AppCompatActivity {
 
                             mSetLoopButton.setText("Set loop start");
                         } else if (mode == 1) {
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart / songLength);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1 - loopStart/songLength);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1 - loopStart / songLength);
                             mStartMarker.setLayoutParams(params);
 
                             mStartMarker.setVisibility(View.VISIBLE);
                             mSetLoopButton.setText("Set loop end");
                         } else if (mode == 2) {
 
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart / songLength);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
                             mStartMarker.setLayoutParams(params);
 
-                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, (loopEnd - loopStart)/songLength);
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, (loopEnd - loopStart) / songLength);
                             mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
 
-                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd)/songLength);
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd) / songLength);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
                             mEndMarker.setVisibility(View.VISIBLE);
@@ -328,6 +304,18 @@ public final class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private void checkTurnOnVisualize() {
+            if (mPlayerAdapter.isInitialized()) {
+                mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
+                if (!isVisualizing) {
+                    mPlayerAdapter.visualize(mBarVisualizer);
+                    isVisualizing = true;
+                } else {
+                    mPlayerAdapter.stopVisualize(mBarVisualizer);
+                    isVisualizing = false;
+                }
+            }
+    }
     private void onUpload() {
         Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
         myIntent.setType("audio/*");
