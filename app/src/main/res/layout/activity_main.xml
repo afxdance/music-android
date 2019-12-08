@@ -59,11 +59,6 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="0"/>
-                <View
-                    android:id="@+id/before_loop_blank"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="0"/>
 
                 <TextView
                     android:id="@+id/loop_start_marker"
@@ -161,7 +156,10 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginEnd="8dp"
-                    android:text="Set Loop Start" />
+                    android:text="Set Loop Start"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/circle"
+                    />
 
                 <ImageButton
                     android:id="@+id/button_increase_speed"
