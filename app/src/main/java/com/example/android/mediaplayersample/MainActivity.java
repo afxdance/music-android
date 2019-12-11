@@ -16,22 +16,37 @@
 
 package com.example.android.mediaplayersample;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import java.net.*;
 import java.io.*;
 import android.os.AsyncTask;
 import org.json.JSONObject;
 import org.json.JSONArray;
+
+
+import android.widget.Toast;
+
+import com.chibde.visualizer.LineBarVisualizer;
 
 
 /**
@@ -42,15 +57,21 @@ import org.json.JSONArray;
 public final class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
-    public static final int MEDIA_RES_ID = R.raw.jazz_in_paris;
     public static final int UPLOAD_REQUEST_CODE = 1;
 
-    private TextView mTextDebug;
     private SeekBar mSeekbarAudio;
-    private ScrollView mScrollContainer;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
     private Uri uri;
+
+    private AlertDialog.Builder mBuilder;
+    private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+    private Context mContext = this;
+    private LineBarVisualizer mBarVisualizer;
+    private boolean enableVisualize = false;
+    private boolean permissionChecked = false;
+    private boolean isVisualizing = false;
+    private TextView curr_speed;
 
     private int loopMode = -1;
 
@@ -98,17 +119,21 @@ public final class MainActivity extends AppCompatActivity {
                 String music = obj.getString("music");
 
                 Log.d(TAG, "music string is this: " + music);
-                String prebase64 = "data:audio/mp3;base64,";
-                String base64stuff = music.substring(prebase64.length());
+                //String prebase64 = "data:audio/mp3;base64,";
+                //String base64stuff = music.substring(prebase64.length());
+                //Log.d(TAG, "decoded base64 stuff: " + base64stuff);
 
-                byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
-                String s = new String(decodedString, "UTF-8");
-                uri = Uri.parse(s);
-                Log.d(TAG, uri.toString());
-                Log.d(TAG, "loading music");
-                mPlayerAdapter.release();
+                //byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
+                //String s = new String(decodedString, "UTF-8");
+                //uri = Uri.parse(s);
+                //Log.d(TAG, uri.toString());
+                //Log.d(TAG, "loading music");
+                //mPlayerAdapter.release();
                 //mPlayerAdapter = null;
-                mPlayerAdapter.loadMedia(uri);
+                //mPlayerAdapter.loadMedia(uri);
+                //MediaPlayerHolder.initializeMediaPlayer();
+
+                mPlayerAdapter.loadMedia(music);
 
 
 
@@ -125,8 +150,9 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        setContentView(R.layout.activity_main);
+        checkPermission();
 
         //String action = intent.getAction();
         Uri uri = this.getIntent().getData();
@@ -184,12 +210,83 @@ public final class MainActivity extends AppCompatActivity {
         initializeSeekbar();
         initializePlaybackController();
         Log.d(TAG, "onCreate: finished");
+
+
+        checkPermission();
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            mBuilder = new AlertDialog.Builder(this);
+            mBuilder.setTitle("Music Visualizer");
+            mBuilder.setMessage("Audio Recording is required for our visualizer to function properly. Please allow this permission. Thank you!");
+            mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    askPermission();
+                }
+            });
+            mBuilder.create();
+            mBuilder.show();
+
+        } else {
+            // Permission has already been granted
+            enableVisualize = true;
+            initializeUI();
+        }
+
+    }
+
+    public void askPermission() {
+
+        // Permission is not granted
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+
+            // MY_PERMISSIONS_REQUEST_RECORD_AUDIO is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_RECORD_AUDIO: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    enableVisualize = true;
+                    permissionChecked = true;
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+            initializeUI();
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //mPlayerAdapter.loadMedia(MEDIA_RES_ID);
         Log.d(TAG, "onStart: create MediaPlayer");
     }
 
@@ -205,30 +302,45 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
-        mTextDebug = (TextView) findViewById(R.id.text_debug);
-        final Button mPlayButton = (Button) findViewById(R.id.button_play);
-        Button mPauseButton = (Button) findViewById(R.id.button_pause);
+        setContentView(R.layout.activity_main);
+        curr_speed = (TextView) findViewById(R.id.speed);
+
+        Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
+        mToast.setGravity(Gravity.TOP, 0, 150);
+        mToast.show();
+        final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
         Button mUploadButton = (Button) findViewById(R.id.button_upload);
-        Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        final Button mSetLoopButton = (Button) findViewById(R.id.button_set_loop);
+        final TextView mLoopStartText = (TextView) findViewById(R.id.text_loop_start);
+        final TextView mLoopEndText = (TextView) findViewById(R.id.text_loop_end);
         Button mIncreaseSpeedButton = (Button) findViewById(R.id.button_increase_speed);
         Button mDecreaseSpeedButton = (Button) findViewById(R.id.button_decrease_speed);
         Button mSkipForwardButton = (Button) findViewById(R.id.button_skip_forward);
         Button mSkipBackwardButton = (Button) findViewById(R.id.button_skip_backward);
+        final Button mVisualizeButton = (Button) findViewById(R.id.button_visualize);
         mSeekbarAudio = (SeekBar) findViewById(R.id.seekbar_audio);
-        mScrollContainer = (ScrollView) findViewById(R.id.scroll_container);
 
-        mPauseButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mPlayerAdapter.pause();
-                    }
-                });
+        final TextView mStartMarker = (TextView) findViewById(R.id.loop_start_marker);
+        final View mBeforeLoopBlank = findViewById(R.id.before_loop_blank);
+        final View mBetweenLoopBlank = findViewById(R.id.in_between_loop_blank);
+        final TextView mEndMarker = (TextView) findViewById(R.id.loop_end_marker);
+        final View mAfterLoopBlank = findViewById(R.id.after_loop_blank);
+        mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
+
+        initializeSeekbar();
+        initializePlaybackController();
+
         mPlayButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.play();
+                        int state = mPlayerAdapter.play();
+                        if (state == 1) {
+                            mPlayButton.setBackgroundResource(R.drawable.play);
+                        } else if (state == 2) {
+                            mPlayButton.setBackgroundResource(R.drawable.pause);
+                        }
+
                     }
                 });
         mUploadButton.setOnClickListener(
@@ -238,25 +350,113 @@ public final class MainActivity extends AppCompatActivity {
                         onUpload();
                     }
                 });
+        if (enableVisualize) {
+            mVisualizeButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (mPlayerAdapter.isInitialized()) {
+                                mBarVisualizer = (LineBarVisualizer) findViewById(R.id.barvisualizer);
+                                if (!isVisualizing) {
+                                    mPlayerAdapter.visualize(mBarVisualizer);
+                                    isVisualizing = true;
+                                    mVisualizeButton.setText("Visualize Off");
+                                } else {
+                                    mPlayerAdapter.stopVisualize(mBarVisualizer);
+                                    isVisualizing = false;
+                                    mVisualizeButton.setText("Visualize");
+                                }
+                            }
+                        }
+                    }
+            );
+        } else {
+            mVisualizeButton.setText("Visualize (Disabled)");
+            mVisualizeButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            askPermission();
+                        }
+                    });
+        }
         mSetLoopButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.setLoop(loopMode);
+                        if (loopMode == -1) {
+                            return;
+                        }
+
+                        //start text and end text get handled in MediaPlayerHolder
+                        mPlayerAdapter.setLoop(loopMode, mLoopStartText, mLoopEndText);
+
+                        float songLength = (float) mPlayerAdapter.getSongLength();
+                        float loopStart = (float) mPlayerAdapter.getLoopStart();
+                        float loopEnd = (float) mPlayerAdapter.getLoopEnd();
+
+                        loopMode++;     // switch to next mode
+
+                        int mode = loopMode % 3;
+                        if (mode == 0) {
+                            mStartMarker.setVisibility(View.INVISIBLE);
+                            mEndMarker.setVisibility(View.INVISIBLE);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
+                            mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
+
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+                            mStartMarker.setLayoutParams(params);
+
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
+                            mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
+
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
+                            mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
+
+                            mSetLoopButton.setText("Set loop start");
+                        } else if (mode == 1) {
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1 - loopStart/songLength);
+                            mStartMarker.setLayoutParams(params);
+
+                            mStartMarker.setVisibility(View.VISIBLE);
+                            mSetLoopButton.setText("Set loop end");
+                        } else if (mode == 2) {
+
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength);
+                            mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
+
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+                            mStartMarker.setLayoutParams(params);
+
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, (loopEnd - loopStart)/songLength);
+                            mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
+
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd)/songLength);
+                            mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
+
+                            mEndMarker.setVisibility(View.VISIBLE);
+
+                            mSetLoopButton.setText("Clear loop");
+                        }
                     }
                 });
         mIncreaseSpeedButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.increaseSpeed();
+                        int new_speed = Math.round(100 * mPlayerAdapter.adjustSpeed(1));
+                        curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
+
                     }
                 });
         mDecreaseSpeedButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mPlayerAdapter.decreaseSpeed();
+                        int new_speed = Math.round(100 * mPlayerAdapter.adjustSpeed(-1));
+                        curr_speed.setText("Current Speed: " + ((Integer) new_speed).toString() + "%");
                     }
                 });
         mSkipForwardButton.setOnClickListener(
@@ -279,15 +479,17 @@ public final class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
         myIntent.setType("audio/*");
         startActivityForResult(myIntent, UPLOAD_REQUEST_CODE);
+
+        loopMode = 0;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent)
-    {
-        if(requestCode == UPLOAD_REQUEST_CODE) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == UPLOAD_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                    Uri uploadedMusic = intent.getData();
-                    mPlayerAdapter.loadMedia(uploadedMusic);
+                Uri uploadedMusic = intent.getData();
+                mPlayerAdapter.loadMedia(uploadedMusic);
+                Log.d(TAG, "uploaded music uri: " + uploadedMusic.toString());
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
@@ -346,28 +548,7 @@ public final class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStateChanged(@State int state) {
-            String stateToString = PlaybackInfoListener.convertStateToString(state);
-            onLogUpdated(String.format("onStateChanged(%s)", stateToString));
         }
 
-        @Override
-        public void onPlaybackCompleted() {
-        }
-
-        @Override
-        public void onLogUpdated(String message) {
-            if (mTextDebug != null) {
-                mTextDebug.append(message);
-                mTextDebug.append("\n");
-                // Moves the scrollContainer focus to the end.
-                mScrollContainer.post(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                mScrollContainer.fullScroll(ScrollView.FOCUS_DOWN);
-                            }
-                        });
-            }
-        }
     }
 }

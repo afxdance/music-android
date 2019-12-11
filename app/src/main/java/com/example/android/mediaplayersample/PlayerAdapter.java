@@ -17,33 +17,51 @@
 package com.example.android.mediaplayersample;
 
 import android.net.Uri;
+import android.widget.TextView;
+
+import com.chibde.visualizer.BarVisualizer;
+import com.chibde.visualizer.LineBarVisualizer;
 
 /**
  * Allows {@link MainActivity} to control media playback of {@link MediaPlayerHolder}.
  */
 public interface PlayerAdapter {
 
+    int getLoopStart();
+
+    int getLoopEnd();
+
+    int getSongLength();
+
     void loadMedia(Uri uri);
+
+    void loadMedia(String s);
 
     void release();
 
     boolean isPlaying();
 
-    void play();
+    boolean isInitialized();
 
-    void setLoop(int loopMode);
+    int play();
 
-    void increaseSpeed();
+    void setLoop(int loopMode, TextView text_start, TextView text_end);
 
-    void decreaseSpeed();
+    float adjustSpeed(int crease);
 
     void skipForward();
 
     void skipBackward();
 
-    void pause();
+    void visualize(LineBarVisualizer visualizer);
+
+    void stopVisualize(LineBarVisualizer visualizer);
 
     void initializeProgressCallback();
 
+    void setDuration();
+
     void seekTo(int position);
+
+    double[] getTime();
 }
