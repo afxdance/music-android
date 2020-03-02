@@ -196,9 +196,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
          * https://github.com/afxdance/music/blob/master/audio.js
          */
 
-        //Hint: You will need to implement additional logic outside of this function.
-        //Hint: Try looking at this.startUpdatingCallbackWithPosition(), which runs a task every millisecond.
-
         setDuration();
         loopMode = loopMode % 3;    // Keep loopMode within the 3 possible valid inputs
         if (loopMode == -1) {
@@ -240,8 +237,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     @Override
     public void skipForward() {
-        //TODO: Skips position forwards 5 seconds.
-        //Hint: use this.seekTo(position) and MediaPlayer.getCurrentPosition()...
+        //Skips position forwards 5 seconds.
         if(mMediaPlayer.isPlaying()) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() + 5000);
         }
@@ -249,7 +245,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     @Override
     public void skipBackward() {
-        //TODO: Skips position backwards 5 seconds.
+        //Skips position backwards 5 seconds.
         if(mMediaPlayer.isPlaying()) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - 5000);
         }
@@ -257,8 +253,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     @Override
     public float adjustSpeed(int crease) {
-        //TODO: Increases playback speed by 5%
-        //Hint: use MediaPlayer.setPlaybackParams()...
+        //Increases playback speed by 5%
         if(speed > 0 || crease == 1) {
             speed += crease * 0.05f;
             if(mMediaPlayer == null){
