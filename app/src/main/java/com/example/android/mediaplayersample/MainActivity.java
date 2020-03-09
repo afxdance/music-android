@@ -62,7 +62,8 @@ public final class MainActivity extends AppCompatActivity {
     private boolean enableVisualize = false;
     private boolean isVisualizing = false;
     private TextView curr_speed;
-    private TextView time;
+    private TextView curr_time;
+    private textView total_time;
 
     private int loopMode = -1;
 
@@ -151,7 +152,8 @@ public final class MainActivity extends AppCompatActivity {
     private void initializeUI() {
         setContentView(R.layout.activity_main);
         curr_speed = (TextView) findViewById(R.id.speed);
-        time = (TextView) findViewById(R.id.time);
+        curr_time = (TextView) findViewById(R.id.curr_time);
+        total_time = (TextView) findViewById(R.id.total_time);
 
         Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
         mToast.setGravity(Gravity.TOP, 0, 150);

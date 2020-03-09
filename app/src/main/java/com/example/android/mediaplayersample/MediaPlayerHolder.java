@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
 
 import java.util.concurrent.Executors;
@@ -50,7 +49,8 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     private float speed = 1.00f;
     private Timer timer;
-    private TextView time;
+    private TextView curr_time;
+    private TextView total_time;
 
     private int loopStart = 0;
     private int loopEnd = 0;
@@ -60,7 +60,8 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
-        time = ((Activity)context).findViewById(R.id.time);
+        curr_time = ((Activity)context).findViewById(R.id.curr_time);
+        total_time = ((Activity)context).findViewById(R.id.total_time);
     }
 
     /**
