@@ -254,7 +254,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public float adjustSpeed(int crease) {
         //Increases playback speed by 5%
-        if(speed > 0 || crease == 1) {
+        if((speed > .25 && crease == -1) || (speed < 2.45 && crease == 1)) {
             speed += crease * 0.05f;
             if(mMediaPlayer == null){
                 return speed;
