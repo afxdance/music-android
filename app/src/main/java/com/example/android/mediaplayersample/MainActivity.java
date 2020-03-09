@@ -40,6 +40,9 @@ import android.widget.Toast;
 
 import com.chibde.visualizer.LineBarVisualizer;
 
+import android.view.View.OnTouchListener;
+import android.view.MotionEvent;
+
 /**
  * Allows playback of a single MP3 file via the UI. It contains a {@link MediaPlayerHolder}
  * which implements the {@link PlayerAdapter} interface that the activity uses to control
@@ -142,7 +145,7 @@ public final class MainActivity extends AppCompatActivity {
         if (isChangingConfigurations() && mPlayerAdapter.isPlaying()) {
             Log.d(TAG, "onStop: don't release MediaPlayer as screen is rotating & playing");
         } else {
-            mPlayerAdapter.release();
+            //mPlayerAdapter.release();
             Log.d(TAG, "onStop: release MediaPlayer");
         }
     }
@@ -194,6 +197,7 @@ public final class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         onUpload();
+                        startSeekbar();
                     }
                 });
 
@@ -348,6 +352,12 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void initializeSeekbar() {
+        mSeekbarAudio.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
         mSeekbarAudio.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int userSelectedPosition = 0;
@@ -370,6 +380,10 @@ public final class MainActivity extends AppCompatActivity {
                         mPlayerAdapter.seekTo(userSelectedPosition);
                     }
                 });
+    }
+
+    private void startSeekbar() {
+        mSeekbarAudio.setOnTouchListener(null);
     }
 
     public class PlaybackListener extends PlaybackInfoListener {
