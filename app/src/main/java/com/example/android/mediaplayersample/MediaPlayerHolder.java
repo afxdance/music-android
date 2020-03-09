@@ -18,6 +18,7 @@ package com.example.android.mediaplayersample;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.app.Activity;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -28,6 +29,8 @@ import com.chibde.visualizer.LineBarVisualizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -46,7 +49,8 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private Runnable mSeekbarPositionUpdateTask;
 
     private float speed = 1.00f;
-
+    private Timer timer;
+    private TextView time;
 
     private int loopStart = 0;
     private int loopEnd = 0;
@@ -56,6 +60,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
+        time = ((Activity)context).findViewById(R.id.time);
     }
 
     /**
@@ -69,6 +74,40 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setLooping(true);
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                        time.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                time.setText(mMediaPlayer.getCurrentPosition());
+                            }
+                        });
+                    } else {
+                        timer.cancel();
+                        timer.purge();
+                    }
+                    //time.setText(mMediaPlayer.getCurrentPosition());
+                    /*MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                                time.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        time.setText(mMediaPlayer.getCurrentPosition());
+                                    }
+                                });
+                            } else {
+                                timer.cancel();
+                                timer.purge();
+                            }
+                        }
+                    }); */
+                }
+            }, 0, 1000);
         }
     }
 
