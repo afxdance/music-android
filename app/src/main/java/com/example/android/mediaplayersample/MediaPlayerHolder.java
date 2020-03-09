@@ -74,16 +74,17 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private void initializeMediaPlayer() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
+            total_time.setText("" + mMediaPlayer.getCurrentPosition());
             mMediaPlayer.setLooping(true);
             timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                        time.post(new Runnable() {
+                        curr_time.post(new Runnable() {
                             @Override
                             public void run() {
-                                time.setText(mMediaPlayer.getCurrentPosition());
+                                curr_time.setText(mMediaPlayer.getCurrentPosition());
                             }
                         });
                     } else {

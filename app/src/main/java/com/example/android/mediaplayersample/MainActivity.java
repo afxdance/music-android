@@ -63,7 +63,7 @@ public final class MainActivity extends AppCompatActivity {
     private boolean isVisualizing = false;
     private TextView curr_speed;
     private TextView curr_time;
-    private textView total_time;
+    private TextView total_time;
 
     private int loopMode = -1;
 
