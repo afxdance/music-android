@@ -238,16 +238,18 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public void skipForward() {
         //Skips position forwards 5 seconds.
-        if(mMediaPlayer.isPlaying()) {
+        if(isInitialized()) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() + 5000);
+            updateProgressCallbackTask();
         }
     }
 
     @Override
     public void skipBackward() {
         //Skips position backwards 5 seconds.
-        if(mMediaPlayer.isPlaying()) {
+        if(isInitialized()) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - 5000);
+            updateProgressCallbackTask();
         }
     }
 
@@ -255,7 +257,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public float adjustSpeed(int crease) {
         //Increases playback speed by 5%
-        if(speed > 0 || crease == 1) {
+        if((speed > .25 && crease == -1) || (speed < 2.45 && crease == 1)) {
             speed += crease * 0.05f;
             if(mMediaPlayer == null){
                 return speed;
@@ -314,7 +316,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     private void updateProgressCallbackTask() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+        if (mMediaPlayer != null) { //&& mMediaPlayer.isPlaying()) {
             int currentPosition = mMediaPlayer.getCurrentPosition();
             if (mPlaybackInfoListener != null) {
                 mPlaybackInfoListener.onPositionChanged(currentPosition);
