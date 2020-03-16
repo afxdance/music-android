@@ -328,8 +328,6 @@ public final class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
         myIntent.setType("audio/*");
         startActivityForResult(myIntent, UPLOAD_REQUEST_CODE);
-
-        //loopMode = 0;
     }
 
     @Override
