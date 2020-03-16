@@ -329,7 +329,7 @@ public final class MainActivity extends AppCompatActivity {
         myIntent.setType("audio/*");
         startActivityForResult(myIntent, UPLOAD_REQUEST_CODE);
 
-        loopMode = 0;
+        //loopMode = 0;
     }
 
     @Override
@@ -338,6 +338,7 @@ public final class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Uri uploadedMusic = intent.getData();
                 mPlayerAdapter.loadMedia(uploadedMusic);
+                loopMode = 0;
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
