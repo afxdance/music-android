@@ -238,7 +238,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public void skipForward() {
         //Skips position forwards 5 seconds.
-        if(isInitialized()) { //mMediaPlayer.isPlaying()
+        if(isInitialized()) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() + 5000);
             updateProgressCallbackTask();
         }
@@ -247,7 +247,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public void skipBackward() {
         //Skips position backwards 5 seconds.
-        if(isInitialized()) { //mMediaPlayer.isPlaying()
+        if(isInitialized()) {
             mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition() - 5000);
             updateProgressCallbackTask();
         }
