@@ -227,6 +227,7 @@ public final class MainActivity extends AppCompatActivity {
                         float songLength = (float) mPlayerAdapter.getSongLength();
                         float loopStart = (float) mPlayerAdapter.getLoopStart();
                         float loopEnd = (float) mPlayerAdapter.getLoopEnd();
+                        int markerWidth = 10;
 
                         loopMode++;     // switch to next mode
 
@@ -237,7 +238,7 @@ public final class MainActivity extends AppCompatActivity {
                             LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(30, 100, 0);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mStartMarker.setLayoutParams(params);
 
                             LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
@@ -248,9 +249,9 @@ public final class MainActivity extends AppCompatActivity {
 
                             mSetLoopButton.setText("Set loop start");
                         } else if (mode == 1) {
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.015F);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.005F);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 100, 0);//1 - loopStart/songLength);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);//1 - loopStart/songLength);
                             mStartMarker.setLayoutParams(params);
                             LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - loopStart/songLength);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
@@ -259,19 +260,20 @@ public final class MainActivity extends AppCompatActivity {
                             mSetLoopButton.setText("Set loop end");
                         } else if (mode == 2) {
 
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.015F);
+
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.005F);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 100, 0);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mStartMarker.setLayoutParams(params);
 
-                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(50, 100, (loopEnd - loopStart)/songLength - 0.1F);
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 100, (loopEnd - loopStart)/songLength);// - 0.1F);
                             mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
 
                             LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd)/songLength);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
-                            LinearLayout.LayoutParams endMarkerParams = new LinearLayout.LayoutParams(20, 100, 0);
+                            LinearLayout.LayoutParams endMarkerParams = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mEndMarker.setLayoutParams(endMarkerParams);
                             mEndMarker.setVisibility(View.VISIBLE);
 
