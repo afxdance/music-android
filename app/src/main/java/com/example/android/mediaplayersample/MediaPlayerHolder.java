@@ -74,42 +74,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private void initializeMediaPlayer() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
-            total_time.setText("" + mMediaPlayer.getCurrentPosition());
             mMediaPlayer.setLooping(true);
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                        curr_time.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                curr_time.setText(mMediaPlayer.getCurrentPosition());
-                            }
-                        });
-                    } else {
-                        timer.cancel();
-                        timer.purge();
-                    }
-                    //time.setText(mMediaPlayer.getCurrentPosition());
-                    /*MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                                time.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        time.setText(mMediaPlayer.getCurrentPosition());
-                                    }
-                                });
-                            } else {
-                                timer.cancel();
-                                timer.purge();
-                            }
-                        }
-                    }); */
-                }
-            }, 0, 1000);
         }
     }
 
@@ -156,6 +121,8 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         } catch (Exception e) {
             Log.d(TAG, "loadMedia error");
         }
+        curr_time.setText("" + convertToTime(0));
+        total_time.setText("" + convertToTime(mMediaPlayer.getDuration()));
 
         initializeProgressCallback();
     }
@@ -356,6 +323,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private void updateProgressCallbackTask() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             int currentPosition = mMediaPlayer.getCurrentPosition();
+            curr_time.setText("" + convertToTime(currentPosition));
             if (mPlaybackInfoListener != null) {
                 mPlaybackInfoListener.onPositionChanged(currentPosition);
             }
