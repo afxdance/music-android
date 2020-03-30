@@ -229,6 +229,14 @@ public final class MainActivity extends AppCompatActivity {
                         float loopEnd = (float) mPlayerAdapter.getLoopEnd();
                         int markerWidth = 10;
 
+                        // Total weight of before, between and end sum to 1
+                        // Individual weights are calculated considering a margin on both sides
+                        // of the seekBar.
+                        // TODO - Different displays may have different margin sizes relative to SeekBar
+                        float margin = 0.04F;   // I think this is percentage of screen width?
+                        float seekBarWeight = 1 - (2 * margin);     // seekBar's % of screen width
+                        float beforeWeight = margin + (loopStart / songLength) * seekBarWeight;
+
                         loopMode++;     // switch to next mode
 
                         int mode = loopMode % 3;
@@ -249,28 +257,28 @@ public final class MainActivity extends AppCompatActivity {
 
                             mSetLoopButton.setText("Set loop start");
                         } else if (mode == 1) {
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.005F);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, beforeWeight);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);//1 - loopStart/songLength);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mStartMarker.setLayoutParams(params);
-                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - loopStart/songLength);
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - beforeWeight);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
                             mStartMarker.setVisibility(View.VISIBLE);
                             mSetLoopButton.setText("Set loop end");
                         } else if (mode == 2) {
 
-
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.005F);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, beforeWeight);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mStartMarker.setLayoutParams(params);
 
-                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 100, (loopEnd - loopStart)/songLength);// - 0.1F);
+                            float betweenWeight = ((loopEnd - loopStart)/songLength) * seekBarWeight;
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 100, betweenWeight);
                             mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
 
-                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd)/songLength);
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - beforeWeight - betweenWeight);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
                             LinearLayout.LayoutParams endMarkerParams = new LinearLayout.LayoutParams(markerWidth, 100, 0);
