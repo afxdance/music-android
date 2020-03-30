@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
 
 import java.util.concurrent.Executors;
