@@ -29,8 +29,6 @@ import com.chibde.visualizer.LineBarVisualizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.Timer;
-import java.util.TimerTask;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -49,7 +47,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private Runnable mSeekbarPositionUpdateTask;
 
     private float speed = 1.00f;
-    private Timer timer;
+
     private TextView curr_time;
     private TextView total_time;
 

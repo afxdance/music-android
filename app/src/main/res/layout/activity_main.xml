@@ -50,9 +50,9 @@
 
                 <SeekBar
                     android:id="@+id/seekbar_audio"
-                    android:layout_width="299dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp" />
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -96,32 +96,28 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/total_time"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/seekbar_audio"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:text="0:00"
-                    android:textAlignment="viewStart" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/curr_time"
-                    android:layout_width="40dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/total_time"
-                    android:layout_alignBottom="@+id/total_time"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginBottom="0dp"
-                    android:layout_toStartOf="@+id/total_time"
-                    android:layout_toEndOf="@+id/seekbar_audio"
+                    android:layout_weight="1"
                     android:text="0:00/"
-                    android:textAlignment="viewEnd" />
-            </RelativeLayout>
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/total_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="0:00"
+                    android:textSize="24sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/speed"
