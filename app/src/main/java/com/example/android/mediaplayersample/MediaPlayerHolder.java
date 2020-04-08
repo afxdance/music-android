@@ -48,7 +48,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private float speed = 1.00f;
 
 
-    private int loopStart = 5;
+    private int loopStart = 0;
     private int loopEnd = 0;
     private int songLength = 0;
 
