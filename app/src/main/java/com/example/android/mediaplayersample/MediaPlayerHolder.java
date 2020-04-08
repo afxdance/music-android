@@ -48,7 +48,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private float speed = 1.00f;
 
 
-    private int loopStart = 0;
+    private int loopStart = 5;
     private int loopEnd = 0;
     private int songLength = 0;
 
@@ -299,7 +299,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                     // Looping
                     if (looping) {
                         int curr = mMediaPlayer.getCurrentPosition();
-                        if (curr > loopEnd) {
+                        if (curr > loopEnd || curr == songLength) {
                             Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
                             mMediaPlayer.seekTo(loopStart);
                         }
