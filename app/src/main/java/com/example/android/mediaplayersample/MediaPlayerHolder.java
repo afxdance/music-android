@@ -48,9 +48,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     private float speed = 1.00f;
 
-    private TextView curr_time;
-    private TextView total_time;
-
     private int loopStart = 0;
     private int loopEnd = 0;
     private int songLength = 0;
@@ -59,8 +56,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     public MediaPlayerHolder(Context context) {
         mContext = context.getApplicationContext();
-        curr_time = ((Activity)context).findViewById(R.id.curr_time);
-        total_time = ((Activity)context).findViewById(R.id.total_time);
     }
 
     /**
@@ -120,8 +115,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         } catch (Exception e) {
             Log.d(TAG, "loadMedia error");
         }
-        curr_time.setText("" + convertToTime(0) + "/");
-        total_time.setText("" + convertToTime(mMediaPlayer.getDuration()));
 
         initializeProgressCallback();
     }
@@ -231,7 +224,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         }
     }
 
-    private String convertToTime(int milliseconds) {
+    public String convertToTime(int milliseconds) {
         long minutes = milliseconds / 60000;
         long seconds = (milliseconds - minutes * 60000) / 1000;
 
@@ -322,7 +315,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private void updateProgressCallbackTask() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             int currentPosition = mMediaPlayer.getCurrentPosition();
-            curr_time.setText("" + convertToTime(currentPosition) + "/");
+
             if (mPlaybackInfoListener != null) {
                 mPlaybackInfoListener.onPositionChanged(currentPosition);
             }

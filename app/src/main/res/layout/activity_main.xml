@@ -128,7 +128,7 @@
             <TextView
                 android:id="@+id/text_loop_start"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="23dp"
                 android:text="Loop Start: N/A" />
 
             <TextView

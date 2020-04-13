@@ -64,6 +64,7 @@ public final class MainActivity extends AppCompatActivity {
     private TextView curr_speed;
     private TextView curr_time;
     private TextView total_time;
+    MediaPlayerHolder mMediaPlayerHolder;
 
     private int loopMode = -1;
 
@@ -341,10 +342,11 @@ public final class MainActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
+
     }
 
     private void initializePlaybackController() {
-        MediaPlayerHolder mMediaPlayerHolder = new MediaPlayerHolder(this);
+        mMediaPlayerHolder = new MediaPlayerHolder(this);
         Log.d(TAG, "initializePlaybackController: created MediaPlayerHolder");
         mMediaPlayerHolder.setPlaybackInfoListener(new PlaybackListener());
         mPlayerAdapter = mMediaPlayerHolder;
@@ -366,6 +368,7 @@ public final class MainActivity extends AppCompatActivity {
                         if (fromUser) {
                             userSelectedPosition = progress;
                         }
+                        curr_time.setText("" + mMediaPlayerHolder.convertToTime(progress) + "/");
                     }
 
                     @Override
@@ -381,6 +384,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onDurationChanged(int duration) {
             mSeekbarAudio.setMax(duration);
+            total_time.setText("" + mMediaPlayerHolder.convertToTime(duration));
             Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
         }
 
