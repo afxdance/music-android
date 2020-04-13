@@ -64,7 +64,6 @@ public final class MainActivity extends AppCompatActivity {
     private TextView curr_speed;
     private TextView curr_time;
     private TextView total_time;
-    MediaPlayerHolder mMediaPlayerHolder;
 
     private int loopMode = -1;
 
@@ -346,7 +345,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void initializePlaybackController() {
-        mMediaPlayerHolder = new MediaPlayerHolder(this);
+        MediaPlayerHolder mMediaPlayerHolder = new MediaPlayerHolder(this);
         Log.d(TAG, "initializePlaybackController: created MediaPlayerHolder");
         mMediaPlayerHolder.setPlaybackInfoListener(new PlaybackListener());
         mPlayerAdapter = mMediaPlayerHolder;
