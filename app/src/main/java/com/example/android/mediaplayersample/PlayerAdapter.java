@@ -37,6 +37,8 @@ public interface PlayerAdapter {
 
     void loadMedia(String s);
 
+    void loadMedia(byte[] byteArray);
+
     void release();
 
     boolean isPlaying();

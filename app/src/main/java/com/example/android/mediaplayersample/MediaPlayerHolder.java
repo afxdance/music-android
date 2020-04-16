@@ -25,6 +25,10 @@ import android.view.View;
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -152,6 +156,58 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         } catch (Exception e) {
             Log.d(TAG, "progress callback error" + e.toString());
         }*/
+    }
+
+    public void loadMedia(byte[] byteArray) {
+        initializeMediaPlayer();
+        try {
+            // create temp file that will hold byte array
+            File tempMp3 = File.createTempFile("kurchina", "mp3", mContext.getCacheDir());
+            tempMp3.deleteOnExit();
+            FileOutputStream fos = new FileOutputStream(tempMp3);
+            fos.write(byteArray);
+            fos.close();
+
+            // resetting mediaplayer instance to evade problems
+            mMediaPlayer.reset();
+
+            // In case you run into issues with threading consider new instance like:
+            // MediaPlayer mediaPlayer = new MediaPlayer();
+
+            // Tried passing path directly, but kept getting
+            // "Prepare failed.: status=0x1"
+            // so using file descriptor instead
+            FileInputStream fis = new FileInputStream(tempMp3);
+            mMediaPlayer.setDataSource(fis.getFD());
+
+            mMediaPlayer.prepare();
+        } catch (IOException ex) {
+            String s = ex.toString();
+            ex.printStackTrace();
+        }
+
+        initializeProgressCallback();
+        /*
+        try {
+            mMediaPlayer.setDataSource(s);
+        } catch (Exception e) {
+            Log.d(TAG, "loadMedia error");
+            Log.d(TAG, "data source error" + e.toString());
+        }
+
+        try {
+            mMediaPlayer.prepare();
+        } catch (Exception e) {
+            Log.d(TAG, "loadMedia error");
+            Log.d(TAG, "prepare error" + e.toString());
+        }
+
+        /*try {
+            initializeProgressCallback();
+        } catch (Exception e) {
+            Log.d(TAG, "progress callback error" + e.toString());
+        }*/
+
     }
 
     @Override

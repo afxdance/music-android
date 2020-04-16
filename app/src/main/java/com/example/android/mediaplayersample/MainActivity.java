@@ -57,6 +57,8 @@ import com.chibde.visualizer.LineBarVisualizer;
 public final class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
+    public static final String TAG2 = "SHARING";
+
     public static final int UPLOAD_REQUEST_CODE = 1;
 
     private SeekBar mSeekbarAudio;
@@ -82,15 +84,15 @@ public final class MainActivity extends AppCompatActivity {
             String jsonText = "";
             try
             {
-                Log.d(TAG, decodedData);
+                Log.d(TAG2, decodedData);
                 URL url = new URL(decodedData);
-                Log.d(TAG, url.toString());
+                Log.d(TAG2, url.toString());
 
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 int code = urlConnection.getResponseCode();
                 String codetostring = String.valueOf(code);
                 codetostring += ": connection secured!";
-                Log.d(TAG, codetostring);
+                Log.d(TAG2, codetostring);
                 BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
                 String inputLine;
@@ -105,35 +107,38 @@ public final class MainActivity extends AppCompatActivity {
             }
             catch (Exception e)
             {
-                Log.d(TAG, e.toString());
+                Log.d(TAG2, e.toString());
             }
             return jsonText;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG, result);
+            Log.d(TAG2, result);
             try {
                 JSONObject obj = new JSONObject(result);
 
                 String music = obj.getString("music");
 
-                Log.d(TAG, "music string is this: " + music);
-                //String prebase64 = "data:audio/mp3;base64,";
-                //String base64stuff = music.substring(prebase64.length());
-                //Log.d(TAG, "decoded base64 stuff: " + base64stuff);
+                Log.d(TAG2, "music string is this: " + music);
+                String prebase64 = "data:audio/mp3;base64,";
+                String base64stuff = music.substring(prebase64.length());
+                Log.d(TAG2, "decoded base64 stuff: " + base64stuff);
 
-                //byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
-                //String s = new String(decodedString, "UTF-8");
-                //uri = Uri.parse(s);
-                //Log.d(TAG, uri.toString());
-                //Log.d(TAG, "loading music");
+                byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
+                mPlayerAdapter.loadMedia(decodedString);
+
+                /*
+                String s = new String(decodedString, "UTF-8");
+                uri = Uri.parse(s);
+                Log.d(TAG2, uri.toString());
+                Log.d(TAG2, "loading music");
                 //mPlayerAdapter.release();
                 //mPlayerAdapter = null;
-                //mPlayerAdapter.loadMedia(uri);
-                //MediaPlayerHolder.initializeMediaPlayer();
+                mPlayerAdapter.loadMedia(uri);
+                //MediaPlayerHolder.initializeMediaPlayer(); */
 
-                mPlayerAdapter.loadMedia(music);
+                //mPlayerAdapter.loadMedia(music);
 
 
 
@@ -194,7 +199,7 @@ public final class MainActivity extends AppCompatActivity {
 
 
         //Log.d(TAG, jsonText);
-        Log.d(TAG, "UWU");
+        Log.d(TAG2, "UWU");
 
         /*try
         {
