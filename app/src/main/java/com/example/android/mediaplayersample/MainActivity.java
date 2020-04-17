@@ -367,7 +367,7 @@ public final class MainActivity extends AppCompatActivity {
                         if (fromUser) {
                             userSelectedPosition = progress;
                         }
-                        curr_time.setText("" + mMediaPlayerHolder.convertToTime(progress) + "/");
+                        curr_time.setText("" + MediaPlayerHolder.convertToTime(progress) + "/");
                     }
 
                     @Override
@@ -383,7 +383,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onDurationChanged(int duration) {
             mSeekbarAudio.setMax(duration);
-            total_time.setText("" + mMediaPlayerHolder.convertToTime(duration));
+            total_time.setText("" + MediaPlayerHolder.convertToTime(duration));
             Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
         }
 
