@@ -18,7 +18,6 @@ package com.example.android.mediaplayersample;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.app.Activity;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
