@@ -133,6 +133,7 @@ public final class MainActivity extends AppCompatActivity {
 
                 byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
                 mPlayerAdapter.loadMedia(decodedString);
+                loopMode = 0;
 
                 /*
                 String s = new String(decodedString, "UTF-8");
