@@ -35,6 +35,8 @@ public interface PlayerAdapter {
 
     void loadMedia(Uri uri);
 
+    void loadMedia(byte[] byteArray);
+
     void release();
 
     boolean isPlaying();
