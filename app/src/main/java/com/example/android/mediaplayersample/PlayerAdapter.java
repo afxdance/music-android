@@ -18,6 +18,7 @@ package com.example.android.mediaplayersample;
 
 import android.net.Uri;
 import android.widget.TextView;
+import java.io.FileDescriptor;
 
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
@@ -35,7 +36,7 @@ public interface PlayerAdapter {
 
     void loadMedia(Uri uri);
 
-    void loadMedia(byte[] byteArray);
+    void loadMedia(FileDescriptor fd);
 
     void release();
 

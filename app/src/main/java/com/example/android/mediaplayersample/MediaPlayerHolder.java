@@ -25,10 +25,8 @@ import android.view.View;
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileDescriptor;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -128,27 +126,12 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         initializeProgressCallback();
     }
 
-    public void loadMedia(byte[] byteArray) {
+    public void loadMedia(FileDescriptor fd) {
+
         initializeMediaPlayer();
+
         try {
-            // create temp file that will hold byte array
-            File tempMp3 = File.createTempFile("kurchina", "mp3", mContext.getCacheDir());
-            tempMp3.deleteOnExit();
-            FileOutputStream fos = new FileOutputStream(tempMp3);
-            fos.write(byteArray);
-            fos.close();
-
-            // resetting mediaplayer instance to evade problems
-            mMediaPlayer.reset();
-
-            // In case you run into issues with threading consider new instance like:
-            // MediaPlayer mediaPlayer = new MediaPlayer();
-
-            // Tried passing path directly, but kept getting
-            // "Prepare failed.: status=0x1"
-            // so using file descriptor instead
-            FileInputStream fis = new FileInputStream(tempMp3);
-            mMediaPlayer.setDataSource(fis.getFD());
+            mMediaPlayer.setDataSource(fd);
             Log.d(TAG2, "mp3 loaded");
 
         } catch (Exception e) {

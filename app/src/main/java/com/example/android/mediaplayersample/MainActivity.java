@@ -52,6 +52,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * Allows playback of a single MP3 file via the UI. It contains a {@link MediaPlayerHolder}
  * which implements the {@link PlayerAdapter} interface that the activity uses to control
@@ -83,7 +88,7 @@ public final class MainActivity extends AppCompatActivity {
 
     private int loopMode = -1;
 
-    private class MyTask extends AsyncTask<String, Integer, String> {
+    private class GetMusicFromIntent extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String ... params) {
             String decodedData = params[0];
@@ -132,21 +137,25 @@ public final class MainActivity extends AppCompatActivity {
                 Log.d(TAG2, "decoded base64 stuff: " + base64stuff);
 
                 byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
-                mPlayerAdapter.loadMedia(decodedString);
+
+                // create temp file that will hold byte array
+                File tempMp3 = File.createTempFile("kurchina", "mp3", getCacheDir());
+                tempMp3.deleteOnExit();
+                FileOutputStream fos = new FileOutputStream(tempMp3);
+                fos.write(decodedString);
+                fos.close();
+
+                // In case you run into issues with threading consider new instance like:
+                // MediaPlayer mediaPlayer = new MediaPlayer();
+
+                // Tried passing path directly, but kept getting
+                // "Prepare failed.: status=0x1"
+                // so using file descriptor instead
+                FileInputStream fis = new FileInputStream(tempMp3);
+
+                mPlayerAdapter.loadMedia(fis.getFD());
                 loopMode = 0;
-
-                /*
-                String s = new String(decodedString, "UTF-8");
-                uri = Uri.parse(s);
-                Log.d(TAG2, uri.toString());
-                Log.d(TAG2, "loading music");
-                //mPlayerAdapter.release();
-                //mPlayerAdapter = null;
-                mPlayerAdapter.loadMedia(uri);
-                //MediaPlayerHolder.initializeMediaPlayer(); */
-
-                //mPlayerAdapter.loadMedia(music);
-
+                
             }
             catch (Exception e)
             {
@@ -170,7 +179,7 @@ public final class MainActivity extends AppCompatActivity {
         String encodedData = uri.getEncodedQuery();
         String decodedData = Uri.decode(encodedData);
         decodedData = decodedData.substring(9);
-        new MyTask().execute(decodedData);
+        new GetMusicFromIntent().execute(decodedData);
 
         initializeUI();
         initializeSeekbar();
