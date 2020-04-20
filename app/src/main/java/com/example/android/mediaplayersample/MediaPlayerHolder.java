@@ -211,13 +211,20 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                 loopStart = loopEnd;
                 loopEnd = temp;
             }
+//            if (loopEnd == songLength) { //handle loopEnd is at very end of song
+//                Log.d(TAG, "LoopEnd == SongLength: " + loopEnd);
+//                loopEnd -= 1000;
+//                Log.d(TAG, "Changing LoopEnd: " + loopEnd);
+//            }
 
             startText.setText("Loop Start: " + convertToTime(loopStart));
             endText.setText("Loop End: " + convertToTime(loopEnd));
 
             looping = true;
+            mMediaPlayer.setLooping(false);
         } else {    // Clear loop
             looping = false;
+            mMediaPlayer.setLooping(true);
 
             startText.setText("Loop Start: N/A");
             endText.setText("Loop End: N/A");
@@ -299,9 +306,10 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                     // Looping
                     if (looping) {
                         int curr = mMediaPlayer.getCurrentPosition();
-                        if (curr > loopEnd || curr == songLength) {
+                        if (curr >= songLength - 100 || curr >= loopEnd) {
                             Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
                             mMediaPlayer.seekTo(loopStart);
+                            play();
                         }
                     }
                 }
