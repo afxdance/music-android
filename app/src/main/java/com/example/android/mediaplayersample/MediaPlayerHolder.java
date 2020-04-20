@@ -162,6 +162,10 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         return 3;
     }
 
+    /** Same functionality as play() but
+     *  is void and does not pause if playing already.
+     *  Only plays.
+     * */
     private void onlyPlay() {
         if (mMediaPlayer != null){
             startUpdatingCallbackWithPosition();
