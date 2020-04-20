@@ -166,11 +166,13 @@ public final class MainActivity extends AppCompatActivity {
 
         //String action = intent.getAction();
         Uri uri = this.getIntent().getData();
+        if (uri != null) {
 
-        String encodedData = uri.getEncodedQuery();
-        String decodedData = Uri.decode(encodedData);
-        decodedData = decodedData.substring(9);
-        new MyTask().execute(decodedData);
+            String encodedData = uri.getEncodedQuery();
+            String decodedData = Uri.decode(encodedData);
+            decodedData = decodedData.substring(9);
+            new MyTask().execute(decodedData);
+        }
 
         initializeUI();
         initializeSeekbar();
