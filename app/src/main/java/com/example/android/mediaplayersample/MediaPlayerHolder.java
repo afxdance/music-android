@@ -162,6 +162,19 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         return 3;
     }
 
+    private void onlyPlay() {
+        if (mMediaPlayer != null){
+            startUpdatingCallbackWithPosition();
+            if(!mMediaPlayer.isPlaying()) {
+                mMediaPlayer.start();
+                mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
+                if (mPlaybackInfoListener != null) {
+                    mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PLAYING);
+                }
+            }
+        }
+    }
+
     @Override
     public void visualize(LineBarVisualizer visualizer){
 
@@ -211,11 +224,11 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                 loopStart = loopEnd;
                 loopEnd = temp;
             }
-//            if (loopEnd == songLength) { //handle loopEnd is at very end of song
-//                Log.d(TAG, "LoopEnd == SongLength: " + loopEnd);
-//                loopEnd -= 1000;
-//                Log.d(TAG, "Changing LoopEnd: " + loopEnd);
-//            }
+            if (loopEnd == songLength) { //handle loopEnd is at very end of song
+                Log.d(TAG, "LoopEnd == SongLength: " + loopEnd);
+                loopEnd -= 250;
+                Log.d(TAG, "Changing LoopEnd: " + loopEnd);
+            }
 
             startText.setText("Loop Start: " + convertToTime(loopStart));
             endText.setText("Loop End: " + convertToTime(loopEnd));
@@ -306,10 +319,10 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                     // Looping
                     if (looping) {
                         int curr = mMediaPlayer.getCurrentPosition();
-                        if (curr >= songLength - 100 || curr >= loopEnd) {
+                        if (curr >= songLength || curr >= loopEnd) {
                             Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
                             mMediaPlayer.seekTo(loopStart);
-                            play();
+                            onlyPlay();
                         }
                     }
                 }
