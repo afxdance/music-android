@@ -65,6 +65,8 @@ public final class MainActivity extends AppCompatActivity {
     private boolean enableVisualize = false;
     private boolean isVisualizing = false;
     private TextView curr_speed;
+    private TextView curr_time;
+    private TextView total_time;
 
     private int loopMode = -1;
 
@@ -153,6 +155,8 @@ public final class MainActivity extends AppCompatActivity {
     private void initializeUI() {
         setContentView(R.layout.activity_main);
         curr_speed = (TextView) findViewById(R.id.speed);
+        curr_time = (TextView) findViewById(R.id.curr_time);
+        total_time = (TextView) findViewById(R.id.total_time);
 
         Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
         mToast.setGravity(Gravity.TOP, 0, 150);
@@ -350,6 +354,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
+
     }
 
     private void initializePlaybackController() {
@@ -381,6 +386,7 @@ public final class MainActivity extends AppCompatActivity {
                         if (fromUser) {
                             userSelectedPosition = progress;
                         }
+                        curr_time.setText("" + MediaPlayerHolder.convertToTime(progress) + "/");
                     }
 
                     @Override
@@ -400,6 +406,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onDurationChanged(int duration) {
             mSeekbarAudio.setMax(duration);
+            total_time.setText("" + MediaPlayerHolder.convertToTime(duration));
             Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
         }
 

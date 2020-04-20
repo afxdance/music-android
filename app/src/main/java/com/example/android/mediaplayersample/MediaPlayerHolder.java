@@ -47,7 +47,6 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     private float speed = 1.00f;
 
-
     private int loopStart = 0;
     private int loopEnd = 0;
     private int songLength = 0;
@@ -224,7 +223,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         }
     }
 
-    private String convertToTime(int milliseconds) {
+    public static String convertToTime(int milliseconds) {
         long minutes = milliseconds / 60000;
         long seconds = (milliseconds - minutes * 60000) / 1000;
 
@@ -318,6 +317,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private void updateProgressCallbackTask() {
         if (mMediaPlayer != null) { //&& mMediaPlayer.isPlaying()) {
             int currentPosition = mMediaPlayer.getCurrentPosition();
+
             if (mPlaybackInfoListener != null) {
                 mPlaybackInfoListener.onPositionChanged(currentPosition);
             }
