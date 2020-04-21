@@ -202,6 +202,7 @@ public final class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         onUpload();
                         startSeekbar();
+
                     }
                 });
 
@@ -348,8 +349,15 @@ public final class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == UPLOAD_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
+                mPlayButton.setBackgroundResource(R.drawable.play);
                 Uri uploadedMusic = intent.getData();
                 mPlayerAdapter.loadMedia(uploadedMusic);
+//                mBarVisualizer = new LineBarVisualizer();
+                mPlayerAdapter.stopVisualize(mBarVisualizer);
+                isVisualizing = false;
+//                checkTurnOnVisualize();
+//                initializeUI();
                 loopMode = 0;
             }
         }

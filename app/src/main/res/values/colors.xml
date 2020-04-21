@@ -20,4 +20,27 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="lightblue">#ADD8E6</color>
+
+    <color name="red">#FF0000</color>
+    <color name="orange">#FF8000</color>
+    <color name="yellow">#CCCC00</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="purple">#7F00FF</color>
+    <color name="magenta">#FF33FF</color>
+    <color name="black">#000000</color>
+    <color name="pink">#FFC0CB</color>
+
+    <integer-array name="colors">
+        <item>@color/red</item>
+        <item>@color/orange</item>
+        <item>@color/yellow</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/purple</item>
+        <item>@color/pink</item>
+        <item>@color/magenta</item>
+        <item>@color/black</item>
+    </integer-array>
+
 </resources>
