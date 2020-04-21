@@ -85,6 +85,8 @@ public final class MainActivity extends AppCompatActivity {
     private boolean enableVisualize = false;
     private boolean isVisualizing = false;
     private TextView curr_speed;
+    private TextView curr_time;
+    private TextView total_time;
 
     private int loopMode = -1;
 
@@ -269,6 +271,8 @@ public final class MainActivity extends AppCompatActivity {
     private void initializeUI() {
         setContentView(R.layout.activity_main);
         curr_speed = (TextView) findViewById(R.id.speed);
+        curr_time = (TextView) findViewById(R.id.curr_time);
+        total_time = (TextView) findViewById(R.id.total_time);
 
         Toast mToast = Toast.makeText(this, "Welcome to the slow.afx.dance mobile app!", Toast.LENGTH_LONG);
         mToast.setGravity(Gravity.TOP, 0, 150);
@@ -314,6 +318,7 @@ public final class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         onUpload();
                         startSeekbar();
+
                     }
                 });
 
@@ -343,6 +348,15 @@ public final class MainActivity extends AppCompatActivity {
                         float songLength = (float) mPlayerAdapter.getSongLength();
                         float loopStart = (float) mPlayerAdapter.getLoopStart();
                         float loopEnd = (float) mPlayerAdapter.getLoopEnd();
+                        int markerWidth = 10;
+
+                        // Total weight of before, between and end sum to 1
+                        // Individual weights are calculated considering a margin on both sides
+                        // of the seekBar.
+                        // TODO - Different displays may have different margin sizes relative to SeekBar
+                        float margin = 0.04F;   // I think this is percentage of screen width?
+                        float seekBarWeight = 1 - (2 * margin);     // seekBar's % of screen width
+                        float beforeWeight = margin + (loopStart / songLength) * seekBarWeight;
 
                         loopMode++;     // switch to next mode
 
@@ -353,7 +367,7 @@ public final class MainActivity extends AppCompatActivity {
                             LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(30, 100, 0);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mStartMarker.setLayoutParams(params);
 
                             LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 0, 0);
@@ -364,30 +378,31 @@ public final class MainActivity extends AppCompatActivity {
 
                             mSetLoopButton.setText("Set loop start");
                         } else if (mode == 1) {
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.015F);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, beforeWeight);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 100, 0);//1 - loopStart/songLength);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mStartMarker.setLayoutParams(params);
-                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - loopStart/songLength);
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - beforeWeight);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
                             mStartMarker.setVisibility(View.VISIBLE);
                             mSetLoopButton.setText("Set loop end");
                         } else if (mode == 2) {
 
-                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, loopStart/songLength + 0.015F);
+                            LinearLayout.LayoutParams beforeBlankParams = new LinearLayout.LayoutParams(0, 0, beforeWeight);
                             mBeforeLoopBlank.setLayoutParams(beforeBlankParams);
 
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 100, 0);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mStartMarker.setLayoutParams(params);
 
-                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(50, 100, (loopEnd - loopStart)/songLength - 0.1F);
+                            float betweenWeight = ((loopEnd - loopStart)/songLength) * seekBarWeight;
+                            LinearLayout.LayoutParams betweenBlankParams = new LinearLayout.LayoutParams(0, 100, betweenWeight);
                             mBetweenLoopBlank.setLayoutParams(betweenBlankParams);
 
-                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, (songLength - loopEnd)/songLength);
+                            LinearLayout.LayoutParams afterEndBlankParams = new LinearLayout.LayoutParams(0, 0, 1 - beforeWeight - betweenWeight);
                             mAfterLoopBlank.setLayoutParams(afterEndBlankParams);
 
-                            LinearLayout.LayoutParams endMarkerParams = new LinearLayout.LayoutParams(20, 100, 0);
+                            LinearLayout.LayoutParams endMarkerParams = new LinearLayout.LayoutParams(markerWidth, 100, 0);
                             mEndMarker.setLayoutParams(endMarkerParams);
                             mEndMarker.setVisibility(View.VISIBLE);
 
@@ -450,12 +465,20 @@ public final class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == UPLOAD_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                final ImageButton mPlayButton = (ImageButton) findViewById(R.id.button_play);
+                mPlayButton.setBackgroundResource(R.drawable.play);
                 Uri uploadedMusic = intent.getData();
                 mPlayerAdapter.loadMedia(uploadedMusic);
+//                mBarVisualizer = new LineBarVisualizer();
+                mPlayerAdapter.stopVisualize(mBarVisualizer);
+                isVisualizing = false;
+//                checkTurnOnVisualize();
+//                initializeUI();
                 loopMode = 0;
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
+
     }
 
     private void initializePlaybackController() {
@@ -487,6 +510,7 @@ public final class MainActivity extends AppCompatActivity {
                         if (fromUser) {
                             userSelectedPosition = progress;
                         }
+                        curr_time.setText("" + MediaPlayerHolder.convertToTime(progress) + "/");
                     }
 
                     @Override
@@ -506,6 +530,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onDurationChanged(int duration) {
             mSeekbarAudio.setMax(duration);
+            total_time.setText("" + MediaPlayerHolder.convertToTime(duration));
             Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
         }
 

@@ -24,9 +24,8 @@ import android.view.View;
 
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
-
 import java.io.FileDescriptor;
-
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,10 +50,13 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
     private float speed = 1.00f;
 
-
     private int loopStart = 0;
     private int loopEnd = 0;
     private int songLength = 0;
+
+
+    private int[] colors;
+    private int color;
 
     private boolean looping;
 
@@ -70,9 +72,18 @@ public final class MediaPlayerHolder implements PlayerAdapter {
      * not the constructor.
      */
     private void initializeMediaPlayer() {
+        colors = mContext.getResources().getIntArray(R.array.colors);
+        color = colors[new Random().nextInt(colors.length)];
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setLooping(true);
+        } else {
+//            mMediaPlayer.pause();
+            mMediaPlayer.reset();
+//            mMediaPlayer.setAudioSessionId(mMediaPlayer.getAudioSessionId() + 1);
+            mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PAUSED);
+//            mMediaPlayer = new MediaPlayer();
+//            mMediaPlayer.setLooping(true);
         }
     }
 
@@ -171,13 +182,13 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     }
 
     @Override
-    public boolean isInitialized(){
+    public boolean isInitialized() {
         return !(mMediaPlayer == null);
     }
 
     @Override
     public int play() {
-        if (mMediaPlayer != null){
+        if (mMediaPlayer != null) {
             startUpdatingCallbackWithPosition();
             if(mMediaPlayer.isPlaying()) {
                 mMediaPlayer.pause();
@@ -185,7 +196,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                     mPlaybackInfoListener.onStateChanged(PlaybackInfoListener.State.PAUSED);
                 }
                 return 1;
-            }else{
+            }else {
                 mMediaPlayer.start();
                 mMediaPlayer.setPlaybackParams(mMediaPlayer.getPlaybackParams().setSpeed(speed));
                 if (mPlaybackInfoListener != null) {
@@ -200,12 +211,17 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     @Override
     public void visualize(LineBarVisualizer visualizer){
 
-        if(visualizer.getVisibility() == View.INVISIBLE){
+        if (visualizer.getVisibility() == View.INVISIBLE){
             visualizer.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             //visualizer.setColor(ContextCompat.getColor(mContext, R.color.lightblue)); // define custom number of bars you want in the visualizer between (10 - 256).
-            visualizer.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
-            visualizer.setDensity(60); // Set your media player to the visualizer.
+//            visualizer.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
+//            visualizer.setColor(ContextCompat.getColor(mContext, color));
+            visualizer.setColor(color);
+//            visualizer.setColor
+
+//            visualizer.setDensity(60); // Set your media player to the visualizer.
+            visualizer.setDensity(100);
             visualizer.setPlayer(mMediaPlayer.getAudioSessionId());
             visualizer.setVisibility(View.VISIBLE);
         }
@@ -259,7 +275,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         }
     }
 
-    private String convertToTime(int milliseconds) {
+    public static String convertToTime(int milliseconds) {
         long minutes = milliseconds / 60000;
         long seconds = (milliseconds - minutes * 60000) / 1000;
 
@@ -353,6 +369,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
     private void updateProgressCallbackTask() {
         if (mMediaPlayer != null) { //&& mMediaPlayer.isPlaying()) {
             int currentPosition = mMediaPlayer.getCurrentPosition();
+
             if (mPlaybackInfoListener != null) {
                 mPlaybackInfoListener.onPositionChanged(currentPosition);
             }
