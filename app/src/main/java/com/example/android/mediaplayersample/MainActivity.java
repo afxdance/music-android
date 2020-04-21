@@ -23,11 +23,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -43,6 +45,18 @@ import com.chibde.visualizer.LineBarVisualizer;
 import android.view.View.OnTouchListener;
 import android.view.MotionEvent;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * Allows playback of a single MP3 file via the UI. It contains a {@link MediaPlayerHolder}
  * which implements the {@link PlayerAdapter} interface that the activity uses to control
@@ -51,11 +65,17 @@ import android.view.MotionEvent;
 public final class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
+    public static final String TAG2 = "SHARING";
+
     public static final int UPLOAD_REQUEST_CODE = 1;
+
 
     private SeekBar mSeekbarAudio;
     private PlayerAdapter mPlayerAdapter;
     private boolean mUserIsSeeking = false;
+
+    private Uri uri;
+
 
     private AlertDialog.Builder mBuilder;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -70,9 +90,105 @@ public final class MainActivity extends AppCompatActivity {
 
     private int loopMode = -1;
 
+    private class GetMusicFromIntent extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String ... params) {
+            String decodedData = params[0];
+            String jsonText = "";
+            try
+            {
+                Log.d(TAG2, decodedData);
+                URL url = new URL(decodedData);
+                Log.d(TAG2, url.toString());
+
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                int code = urlConnection.getResponseCode();
+                String codetostring = String.valueOf(code);
+                codetostring += ": connection secured!";
+                Log.d(TAG2, codetostring);
+                BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                String inputLine;
+                StringBuilder jsonTextBuilder = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    jsonTextBuilder.append(inputLine);
+                }
+                in.close();
+                jsonText = jsonTextBuilder.toString();
+
+
+            }
+            catch (Exception e)
+            {
+                Log.d(TAG2, e.toString());
+            }
+            return jsonText;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d(TAG2, result);
+            try {
+                JSONObject obj = new JSONObject(result);
+
+                String music = obj.getString("music");
+
+                Log.d(TAG2, "music string is this: " + music);
+                String prebase64 = "data:audio/mp3;base64,";
+                String base64stuff = music.substring(prebase64.length());
+                Log.d(TAG2, "decoded base64 stuff: " + base64stuff);
+
+                byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
+
+                // create temp file that will hold byte array
+                File tempMp3 = File.createTempFile("kurchina", "mp3", getCacheDir());
+                tempMp3.deleteOnExit();
+                FileOutputStream fos = new FileOutputStream(tempMp3);
+                fos.write(decodedString);
+                fos.close();
+
+                // In case you run into issues with threading consider new instance like:
+                // MediaPlayer mediaPlayer = new MediaPlayer();
+
+                // Tried passing path directly, but kept getting
+                // "Prepare failed.: status=0x1"
+                // so using file descriptor instead
+                FileInputStream fis = new FileInputStream(tempMp3);
+
+                mPlayerAdapter.loadMedia(fis.getFD());
+                loopMode = 0;
+                
+            }
+            catch (Exception e)
+            {
+                Log.d(TAG, e.toString());
+            }
+
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+        checkPermission();
+
+        //String action = intent.getAction();
+        Uri uri = this.getIntent().getData();
+        if (uri != null) {
+            String encodedData = uri.getEncodedQuery();
+            String decodedData = Uri.decode(encodedData);
+            decodedData = decodedData.substring(9);
+            new GetMusicFromIntent().execute(decodedData);
+        }
+
+        initializeUI();
+        initializeSeekbar();
+        initializePlaybackController();
+        Log.d(TAG2, "UWU");
+        Log.d(TAG, "onCreate: finished");
 
         checkPermission();
     }

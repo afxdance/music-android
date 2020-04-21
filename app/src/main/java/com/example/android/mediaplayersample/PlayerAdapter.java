@@ -18,6 +18,7 @@ package com.example.android.mediaplayersample;
 
 import android.net.Uri;
 import android.widget.TextView;
+import java.io.FileDescriptor;
 
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
@@ -34,6 +35,8 @@ public interface PlayerAdapter {
     int getSongLength();
 
     void loadMedia(Uri uri);
+
+    void loadMedia(FileDescriptor fd);
 
     void release();
 

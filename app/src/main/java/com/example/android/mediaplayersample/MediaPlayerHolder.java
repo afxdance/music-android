@@ -24,7 +24,7 @@ import android.view.View;
 
 import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
-
+import java.io.FileDescriptor;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -38,6 +38,8 @@ import android.widget.TextView;
  */
 public final class MediaPlayerHolder implements PlayerAdapter {
     public static final String TAG = "MediaPlayerHolder";
+    public static final String TAG2 = "SHARING";
+
     public static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 1000;
 
     private final Context mContext;
@@ -121,16 +123,47 @@ public final class MediaPlayerHolder implements PlayerAdapter {
             mMediaPlayer.setDataSource(mContext, uri);
         } catch (Exception e) {
             Log.d(TAG, "loadMedia error");
+            Log.d(TAG, "data source error" + e.toString());
         }
 
         try {
             mMediaPlayer.prepare();
         } catch (Exception e) {
             Log.d(TAG, "loadMedia error");
+            Log.d(TAG, "prepare error" + e.toString());
+
         }
 
         initializeProgressCallback();
     }
+
+    public void loadMedia(FileDescriptor fd) {
+
+        initializeMediaPlayer();
+
+        try {
+            mMediaPlayer.setDataSource(fd);
+            Log.d(TAG2, "mp3 loaded");
+
+        } catch (Exception e) {
+            Log.d(TAG, "loadMedia error");
+            Log.d(TAG, "data source error" + e.toString());
+        }
+
+        try {
+            mMediaPlayer.prepare();
+        } catch (Exception e) {
+            Log.d(TAG, "loadMedia error");
+            Log.d(TAG, "prepare error" + e.toString());
+        }
+
+        try {
+            initializeProgressCallback();
+        } catch (Exception e) {
+            Log.d(TAG, "progress callback error" + e.toString());
+        }
+    }
+
 
     @Override
     public void release() {
