@@ -122,15 +122,15 @@ public final class MediaPlayerHolder implements PlayerAdapter {
         try {
             mMediaPlayer.setDataSource(mContext, uri);
         } catch (Exception e) {
-            Log.d(TAG, "loadMedia error");
-            Log.d(TAG, "data source error" + e.toString());
+            // Log.d(TAG, "loadMedia error");
+            // Log.d(TAG, "data source error" + e.toString());
         }
 
         try {
             mMediaPlayer.prepare();
         } catch (Exception e) {
-            Log.d(TAG, "loadMedia error");
-            Log.d(TAG, "prepare error" + e.toString());
+            // Log.d(TAG, "loadMedia error");
+            // Log.d(TAG, "prepare error" + e.toString());
 
         }
 
@@ -143,24 +143,24 @@ public final class MediaPlayerHolder implements PlayerAdapter {
 
         try {
             mMediaPlayer.setDataSource(fd);
-            Log.d(TAG2, "mp3 loaded");
+            // Log.d(TAG2, "mp3 loaded");
 
         } catch (Exception e) {
-            Log.d(TAG, "loadMedia error");
-            Log.d(TAG, "data source error" + e.toString());
+            // Log.d(TAG, "loadMedia error");
+            // Log.d(TAG, "data source error" + e.toString());
         }
 
         try {
             mMediaPlayer.prepare();
         } catch (Exception e) {
-            Log.d(TAG, "loadMedia error");
-            Log.d(TAG, "prepare error" + e.toString());
+            // Log.d(TAG, "loadMedia error");
+            // Log.d(TAG, "prepare error" + e.toString());
         }
 
         try {
             initializeProgressCallback();
         } catch (Exception e) {
-            Log.d(TAG, "progress callback error" + e.toString());
+            // Log.d(TAG, "progress callback error" + e.toString());
         }
     }
 
@@ -256,7 +256,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
             startText.setText("Loop Start: " + convertToTime(loopStart));
         } else if (loopMode == 1) {
             loopEnd = mMediaPlayer.getCurrentPosition();
-            Log.d(TAG, "Set loop end: " + loopEnd);
+            // Log.d(TAG, "Set loop end: " + loopEnd);
             if (loopStart > loopEnd) {  // Flip start/end if loop is inverted
                 int temp = loopStart;
                 loopStart = loopEnd;
@@ -351,7 +351,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                     if (looping) {
                         int curr = mMediaPlayer.getCurrentPosition();
                         if (curr > loopEnd) {
-                            Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
+                            // Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
                             mMediaPlayer.seekTo(loopStart);
                         }
                     }

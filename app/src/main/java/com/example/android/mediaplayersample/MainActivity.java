@@ -97,15 +97,15 @@ public final class MainActivity extends AppCompatActivity {
             String jsonText = "";
             try
             {
-                Log.d(TAG2, decodedData);
+                // Log.d(TAG2, decodedData);
                 URL url = new URL(decodedData);
-                Log.d(TAG2, url.toString());
+                // Log.d(TAG2, url.toString());
 
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 int code = urlConnection.getResponseCode();
                 String codetostring = String.valueOf(code);
                 codetostring += ": connection secured!";
-                Log.d(TAG2, codetostring);
+                // Log.d(TAG2, codetostring);
                 BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
                 String inputLine;
@@ -120,23 +120,23 @@ public final class MainActivity extends AppCompatActivity {
             }
             catch (Exception e)
             {
-                Log.d(TAG2, e.toString());
+                // Log.d(TAG2, e.toString());
             }
             return jsonText;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG2, result);
+            // Log.d(TAG2, result);
             try {
                 JSONObject obj = new JSONObject(result);
 
                 String music = obj.getString("music");
 
-                Log.d(TAG2, "music string is this: " + music);
+                // Log.d(TAG2, "music string is this: " + music);
                 String prebase64 = "data:audio/mp3;base64,";
                 String base64stuff = music.substring(prebase64.length());
-                Log.d(TAG2, "decoded base64 stuff: " + base64stuff);
+                // Log.d(TAG2, "decoded base64 stuff: " + base64stuff);
 
                 byte[] decodedString = Base64.decode(base64stuff, Base64.DEFAULT);
 
@@ -161,7 +161,7 @@ public final class MainActivity extends AppCompatActivity {
             }
             catch (Exception e)
             {
-                Log.d(TAG, e.toString());
+                // Log.d(TAG, e.toString());
             }
 
 
@@ -187,8 +187,8 @@ public final class MainActivity extends AppCompatActivity {
         initializeUI();
         initializeSeekbar();
         initializePlaybackController();
-        Log.d(TAG2, "UWU");
-        Log.d(TAG, "onCreate: finished");
+        // Log.d(TAG2, "UWU");
+        // Log.d(TAG, "onCreate: finished");
 
         checkPermission();
     }
@@ -254,17 +254,17 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart: create MediaPlayer");
+        // Log.d(TAG, "onStart: create MediaPlayer");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         if (isChangingConfigurations() && mPlayerAdapter.isPlaying()) {
-            Log.d(TAG, "onStop: don't release MediaPlayer as screen is rotating & playing");
+            // Log.d(TAG, "onStop: don't release MediaPlayer as screen is rotating & playing");
         } else {
             //mPlayerAdapter.release();
-            Log.d(TAG, "onStop: release MediaPlayer");
+            // Log.d(TAG, "onStop: release MediaPlayer");
         }
     }
 
@@ -483,10 +483,10 @@ public final class MainActivity extends AppCompatActivity {
 
     private void initializePlaybackController() {
         MediaPlayerHolder mMediaPlayerHolder = new MediaPlayerHolder(this);
-        Log.d(TAG, "initializePlaybackController: created MediaPlayerHolder");
+        // Log.d(TAG, "initializePlaybackController: created MediaPlayerHolder");
         mMediaPlayerHolder.setPlaybackInfoListener(new PlaybackListener());
         mPlayerAdapter = mMediaPlayerHolder;
-        Log.d(TAG, "initializePlaybackController: MediaPlayerHolder progress callback set");
+        // Log.d(TAG, "initializePlaybackController: MediaPlayerHolder progress callback set");
     }
 
     private void initializeSeekbar() {
@@ -531,14 +531,14 @@ public final class MainActivity extends AppCompatActivity {
         public void onDurationChanged(int duration) {
             mSeekbarAudio.setMax(duration);
             total_time.setText("" + MediaPlayerHolder.convertToTime(duration));
-            Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
+            // Log.d(TAG, String.format("setPlaybackDuration: setMax(%d)", duration));
         }
 
         @Override
         public void onPositionChanged(int position) {
             if (!mUserIsSeeking) {
                 mSeekbarAudio.setProgress(position, true);
-                Log.d(TAG, String.format("setPlaybackPosition: setProgress(%d)", position));
+                // Log.d(TAG, String.format("setPlaybackPosition: setProgress(%d)", position));
             }
         }
 
