@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.android.mediaplayersample;
+package com.afxmusic;
 
 import android.net.Uri;
 import android.widget.TextView;
 import java.io.FileDescriptor;
 
-import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
 
 /**

@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.example.android.mediaplayersample;
+package com.afxmusic;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.chibde.visualizer.BarVisualizer;
 import com.chibde.visualizer.LineBarVisualizer;
 import java.io.FileDescriptor;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import android.util.Log;
+
 import android.widget.TextView;
 
 /**

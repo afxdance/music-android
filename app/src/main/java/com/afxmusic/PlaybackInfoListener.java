@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.mediaplayersample;
+package com.afxmusic;
 
 import android.support.annotation.IntDef;
 

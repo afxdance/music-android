@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.mediaplayersample;
+package com.afxmusic;
 
 import android.Manifest;
 import android.app.Activity;
@@ -30,7 +30,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -55,7 +54,6 @@ import java.net.URL;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Allows playback of a single MP3 file via the UI. It contains a {@link MediaPlayerHolder}

@@ -16,7 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.android.mediaplayersample">
+          package="com.afxmusic">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,18 +31,21 @@
             android:supportsRtl="true"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme">
-        <activity android:name="com.example.android.mediaplayersample.MainActivity"
+        <activity android:name="com.afxmusic.MainActivity"
                   android:configChanges="orientation">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.LAUNCHER"/>
 
                 <data android:scheme="https"
                     android:host="slow.afx.dance"
                     />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
         </activity>
