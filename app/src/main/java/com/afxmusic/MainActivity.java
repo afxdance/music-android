@@ -405,6 +405,7 @@ public final class MainActivity extends AppCompatActivity {
                             mEndMarker.setVisibility(View.VISIBLE);
 
                             mSetLoopButton.setText("Clear loop");
+                            mPlayButton.setBackgroundResource(R.drawable.pause);
                         }
                     }
                 });

@@ -376,6 +376,7 @@ public final class MediaPlayerHolder implements PlayerAdapter {
                             //Log.d(TAG, "Looping back from " + loopEnd + " to " + loopStart);
                             mMediaPlayer.seekTo(loopStart);
                             onlyPlay();
+
                         }
                     }
                 }
